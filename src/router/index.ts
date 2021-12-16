@@ -1,41 +1,51 @@
-import { RouteRecordRaw, createRouter, createWebHashHistory } from 'vue-router'
+import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: () => import(/* webpackChunkName: "home" */ '../views/public/Home.vue'),
   },
   {
     path: '/dashboard',
-    name: 'Dashboard',
+    name: 'dashboard',
     component: () => import(/* webpackChunkName: "dashboard" */ '../views/private/MysteryDashboard.vue'),
   },
   {
     path: '/mys-card/:id',
-    name: 'MysCard',
+    name: 'mysCard',
     component: () => import(/* webpackChunkName: "card" */ '../views/public/MysteryCardPlay.vue'),
   },
   {
     path: '/mys-cloud/:id',
-    name: 'MysCloud',
+    name: 'mysCloud',
     component: () => import(/* webpackChunkName: "cloud" */ '../views/public/MysteryCloudPlay.vue'),
   },
   {
     path: '/mys-wheel/:id',
-    name: 'MysWheel',
+    name: 'mysWheel',
     component: () => import(/* webpackChunkName: "wheel" */ '../views/public/MysteryWheelPlay.vue'),
+  },
+  {
+    path: '/not-found',
+    name: 'not_found',
+    component: () => import(/* webpackChunkName: "notfound" */ '../views/problems/NotFound.vue'),
+  },
+  {
+    path: '/system-error',
+    name: 'system_error',
+    component: () => import(/* webpackChunkName: "error" */ '../views/problems/Error.vue'),
   },
   {
     path: '/:pathMatch(.*)*',
     redirect: {
-      name: 'Home',
+      name: 'not_found',
     },
   },
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(process.env.BASE_URL),
   routes,
 })
 

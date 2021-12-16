@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import { getAnalytics } from 'firebase/analytics'
+import { getAnalytics, logEvent } from 'firebase/analytics'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAHTuIgdrVNLG3UKsbrvhizeU8l_POnoe0',
@@ -11,12 +12,10 @@ const firebaseConfig = {
   measurementId: 'G-51N74HHHTL',
 }
 
-export default class FirebaseHepler {
-  app
-  analytics
+const firebaseApp = initializeApp(firebaseConfig)
+const analytics = getAnalytics(firebaseApp)
+logEvent(analytics, 'notification_received')
 
-  setup() {
-    this.app = initializeApp(firebaseConfig)
-    this.analytics = getAnalytics(this.app)
-  }
-}
+const database = getFirestore()
+
+export { firebaseApp, database, analytics }

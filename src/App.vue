@@ -9,6 +9,8 @@
 import { Options, Vue } from 'vue-class-component'
 import { BackTop } from 'ant-design-vue'
 
+Vue.registerHooks(['beforeRouteEnter'])
+
 @Options({
   components: {
     [BackTop.name]: BackTop,

@@ -1,11 +1,12 @@
 /* eslint-disable */
-
+import { Firestore } from 'firebase/firestore'
 import { Store } from 'vuex'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $t: Func
+    $t: Function
     $store: Store<State>
+    $database: Firestore
   }
 }
 
