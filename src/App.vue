@@ -1,10 +1,21 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div class="wrapper">
+    <router-view />
+    <a-back-top />
   </div>
-  <router-view />
 </template>
+
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component'
+import { BackTop } from 'ant-design-vue'
+
+@Options({
+  components: {
+    [BackTop.name]: BackTop,
+  },
+})
+export default class App extends Vue {}
+</script>
 
 <style lang="scss">
 #app {

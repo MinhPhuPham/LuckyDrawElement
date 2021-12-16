@@ -1,46 +1,51 @@
 module.exports = {
   env: {
     browser: true,
-    es6: true,
-    node: true,
+    es2021: true,
   },
-
-  // the ts-eslint recommended ruleset sets the parser so we need to set it back
-  parser: 'vue-eslint-parser',
-
+  extends: 'plugin:vue/essential',
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 13,
     parser: '@typescript-eslint/parser',
-    extraFileExtensions: ['.vue'],
-    ecmaFeatures: {
-      jsx: true,
-    },
     sourceType: 'module',
   },
-
-  plugins: ['@typescript-eslint'],
-
-  extends: [
-    'plugin:vue/vue3-recommended',
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-  ],
-
+  plugins: ['vue', '@typescript-eslint'],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-
-    // this rule, if on, would require explicit return type on the `render` function
-    '@typescript-eslint/explicit-function-return-type': 'off',
-  },
-
-  overrides: [
-    {
-      files: ['*.js'],
-      rules: {
-        '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/interface-name-prefix': 0,
+    'comma-dangle': [
+      'error',
+      {
+        arrays: 'always-multiline',
+        objects: 'always-multiline',
+        imports: 'always-multiline',
+        exports: 'always-multiline',
+        functions: 'never',
       },
-    },
-  ],
+    ],
+    'no-useless-catch': 'off',
+    '@typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/naming-convention': 'off',
+    indent: 0,
+    'space-before-function-paren': 0,
+    '@typescript-eslint/no-explicit-any': [
+      'error',
+      {
+        fixToUnknown: true,
+      },
+    ],
+    '@typescript-eslint/member-delimiter-style': [
+      'error',
+      {
+        multiline: {
+          delimiter: 'none',
+        },
+        singleline: {},
+      },
+    ],
+    '@typescript-eslint/ban-ts-ignore': 'off',
+    'vue/no-v-model-argument': 'off',
+    'vue/no-multiple-template-root': 'off',
+  },
 }
