@@ -1,3 +1,7 @@
-.text-center {
-  text-align: center;
+$textAlignments: ('left', 'right', 'center');
+
+@each $textAlign in $textAlignments {
+  .text-#{$textAlign} {
+    text-align: #{$textAlign};
+  }
 }

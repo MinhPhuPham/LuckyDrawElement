@@ -1,0 +1,20 @@
+@import '../utils/variables';
+
+.dashboard {
+  background-color: $bg-grey;
+
+  &__wrapper {
+    width: 90%;
+    min-height: 85vh;
+
+    margin: 0 auto;
+    margin-top: 1rem;
+    background-color: $bg-white;
+    border-radius: 5px;
+  }
+
+  &__left {
+    min-height: 85vh;
+    border-right: 1px solid $border-light;
+  }
+}

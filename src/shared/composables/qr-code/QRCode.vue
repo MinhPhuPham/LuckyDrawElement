@@ -8,9 +8,5 @@ import { Vue, Options } from 'vue-class-component'
 @Options({
   components: {},
 })
-export default class Home extends Vue {
-  created() {
-    console.log('reach to card')
-  }
-}
+export default class QRCode extends Vue {}
 </script>

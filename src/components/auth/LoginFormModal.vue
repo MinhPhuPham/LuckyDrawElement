@@ -44,9 +44,11 @@
 import { Vue, Options } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Modal, FormItem, Form, Input, Row, Col, Space } from 'ant-design-vue'
-import { GooglePlusOutlined, FacebookOutlined } from '@ant-design/icons-vue'
+import { GooglePlusOutlined, FacebookOutlined, SmileOutlined } from '@ant-design/icons-vue'
 
 import LoginMixin from '@/shared/mixins/LoginMixin.vue'
+import { User } from '@firebase/auth'
+import { h } from 'vue'
 @Options({
   components: {
     [Modal.name]: Modal,
@@ -62,7 +64,6 @@ import LoginMixin from '@/shared/mixins/LoginMixin.vue'
   mixins: [LoginMixin],
 })
 export default class LoginFormModal extends Vue {
-  testVisiable = false
   @Prop({ default: false, type: Boolean }) visible!: boolean
 
   get loginVisible() {
@@ -79,6 +80,16 @@ export default class LoginFormModal extends Vue {
   }
 
   loginRules = {}
+
+  loginSuccessful(user: User) {
+    this.$notification.open({
+      message: `Welcome ${user.displayName || user.email}`,
+      description: `Let's enjoy our product`,
+      icon: h(SmileOutlined, { style: 'color: #108ee9' }),
+    })
+
+    this.loginVisible = false
+  }
 
   created() {
     this.loginRules = {

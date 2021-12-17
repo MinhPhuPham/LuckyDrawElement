@@ -8,9 +8,9 @@ import { Vue, Options } from 'vue-class-component'
 @Options({
   components: {},
 })
-export default class Home extends Vue {
+export default class PlayWrapper extends Vue {
   created() {
-    console.log('reach to card')
+    console.log('redirect calculator')
   }
 }
 </script>

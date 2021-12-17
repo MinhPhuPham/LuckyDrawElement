@@ -20,6 +20,7 @@
     "eslint-plugin-node": "^11.1.0",
     "firebase": "^9.6.1",
     "qrcode.vue": "^3.3.3",
+    "uniqid": "^5.4.0",
     "vue": "^3.2.26",
     "vue-class-component": "8.0.0-rc.1",
     "vue-i18n": "^9.2.0-alpha.4",

@@ -1,6 +1,10 @@
 import { initializeApp } from 'firebase/app'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 import { getFirestore } from 'firebase/firestore'
+import { onAuthStateChanged, getAuth } from 'firebase/auth'
+
+import store from '@/store/index'
+import { AUTH_ACTION } from '@/store/auth/actions'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAHTuIgdrVNLG3UKsbrvhizeU8l_POnoe0',
@@ -16,6 +20,15 @@ const firebaseApp = initializeApp(firebaseConfig)
 const analytics = getAnalytics(firebaseApp)
 logEvent(analytics, 'notification_received')
 
+const auth = getAuth()
+// eslint-disable-next-line
+const authInit = (app: any) => {
+  onAuthStateChanged(auth, (user) => {
+    store.dispatch(AUTH_ACTION.UPSERT_USER, { user })
+    app.config.globalProperties.$waitingInitAuth.value = true
+  })
+}
+
 const database = getFirestore()
 
-export { firebaseApp, database, analytics }
+export { firebaseApp, database, analytics, authInit }

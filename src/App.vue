@@ -1,13 +1,14 @@
 <template>
-  <div class="wrapper">
-    <router-view />
-    <a-back-top />
-  </div>
+  <router-view />
+  <a-back-top />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
 import { BackTop } from 'ant-design-vue'
+
+import { onAuthStateChanged } from 'firebase/auth'
+import { Watch } from 'vue-property-decorator'
 
 Vue.registerHooks(['beforeRouteEnter'])
 
@@ -16,7 +17,19 @@ Vue.registerHooks(['beforeRouteEnter'])
     [BackTop.name]: BackTop,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  get isPrivate() {
+    return this.$route.meta?.isPrivate
+  }
+
+  get isInit() {
+    return this.$waitingInitAuth
+  }
+
+  @Watch('$waitingInitAuth', { deep: true }) onChange(value: Boolean) {
+    console.log(value)
+  }
+}
 </script>
 
 <style lang="scss">
@@ -26,18 +39,5 @@ export default class App extends Vue {}
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>

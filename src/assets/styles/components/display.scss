@@ -1,9 +1,29 @@
+$positions: ('relative', 'sticky', 'absolute');
+
+@each $position in $positions {
+  .#{$position} {
+    position: #{$position};
+  }
+}
+
 .block {
   display: block;
 }
 
 .flex {
   @include flexbox;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-nowrap {
+  @include flex-wrap(nowrap);
+}
+
+.flex-wrap {
+  @include flex-wrap(wrap);
 }
 
 .items-center {

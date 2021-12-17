@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, reactive } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -10,7 +10,7 @@ import 'ant-design-vue/dist/antd.css'
 import i18n from './plugins/i18n'
 import routerPlugin from './plugins/router'
 import './helpers/firebase'
-import { database } from './helpers/firebase'
+import { database, authInit } from './helpers/firebase'
 
 const app = createApp(App)
 
@@ -18,5 +18,8 @@ app.config.globalProperties.$message = message
 app.config.globalProperties.$confirm = Modal.confirm
 app.config.globalProperties.$notification = notification
 app.config.globalProperties.$database = database
+app.config.globalProperties.$waitingInitAuth = reactive({ value: false })
 
 app.use(i18n).use(router).use(routerPlugin).use(store).use(Button).mount('#app')
+
+authInit(app)

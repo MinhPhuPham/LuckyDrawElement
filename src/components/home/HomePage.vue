@@ -10,9 +10,16 @@
         <LoginOutlined />
       </template>
     </a-button>
+
+    <a-button @click="$goto('dashboard')" type="primary" shape="round" size="large">
+      <template #icon>
+        Go to Dashboard
+        <LoginOutlined />
+      </template>
+    </a-button>
   </div>
 
-  <LoginFormModal v-model:visible="modalVisiable" @visible="modalVisiable = false" />
+  <LoginFormModal v-if="modalVisiable" v-model:visible="modalVisiable" @visible="modalVisiable = false" />
 </template>
 
 <script lang="ts">
@@ -26,6 +33,10 @@ import LoginFormModal from '@/components/auth/LoginFormModal.vue'
 })
 export default class Home extends Vue {
   modalVisiable = false
+
+  created() {
+    this.modalVisiable = !!this.$route.query.openLoginModal
+  }
 }
 </script>
 

@@ -27,6 +27,10 @@ export default class Home extends Vue {
     next()
   }
 
+  // log() {
+  //   console.log(this.$waitingInitAuth)
+  // }
+
   async created() {
     // try {
     //   const docRef = await addDoc(collection(this.$database, 'users'), {

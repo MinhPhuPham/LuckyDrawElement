@@ -7,6 +7,9 @@
   "login": {
     "title": "Welcome to Join Us"
   },
+  "miracle": {
+    "create": "Create New Miracle"
+  },
   "form": {
     "email": "Email",
     "password": "Password",

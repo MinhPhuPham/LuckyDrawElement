@@ -10,21 +10,39 @@ const routes: Array<RouteRecordRaw> = [
     path: '/dashboard',
     name: 'dashboard',
     component: () => import(/* webpackChunkName: "dashboard" */ '../views/private/MysteryDashboard.vue'),
+    meta: {
+      isPrivate: true,
+    },
   },
   {
-    path: '/mys-card/:id',
-    name: 'mysCard',
-    component: () => import(/* webpackChunkName: "card" */ '../views/public/MysteryCardPlay.vue'),
-  },
-  {
-    path: '/mys-cloud/:id',
-    name: 'mysCloud',
-    component: () => import(/* webpackChunkName: "cloud" */ '../views/public/MysteryCloudPlay.vue'),
-  },
-  {
-    path: '/mys-wheel/:id',
-    name: 'mysWheel',
-    component: () => import(/* webpackChunkName: "wheel" */ '../views/public/MysteryWheelPlay.vue'),
+    path: '/play',
+    name: 'play',
+    component: () => import(/* webpackChunkName: "dashboard" */ '../views/public/MysteryPlayWrapper.vue'),
+    redirect: {
+      name: 'redirect',
+    },
+    children: [
+      {
+        path: 'redirect',
+        name: 'redirect',
+        component: () => import(/* webpackChunkName: "dashboard" */ '../views/public/MysteryRedirect.vue'),
+      },
+      {
+        path: 'mys-card/:id',
+        name: 'mysCard',
+        component: () => import(/* webpackChunkName: "card" */ '../views/public/MysteryCardPlay.vue'),
+      },
+      {
+        path: 'mys-cloud/:id',
+        name: 'mysCloud',
+        component: () => import(/* webpackChunkName: "cloud" */ '../views/public/MysteryCloudPlay.vue'),
+      },
+      {
+        path: 'mys-wheel/:id',
+        name: 'mysWheel',
+        component: () => import(/* webpackChunkName: "wheel" */ '../views/public/MysteryWheelPlay.vue'),
+      },
+    ],
   },
   {
     path: '/not-found',
