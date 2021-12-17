@@ -1,20 +1,25 @@
 <template>
-  <router-view />
-  <a-back-top />
+  <template v-if="!isInit">
+    <ms-loader></ms-loader>
+  </template>
+  <template v-else>
+    <router-view />
+    <a-back-top />
+  </template>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
 import { BackTop } from 'ant-design-vue'
-
-import { onAuthStateChanged } from 'firebase/auth'
 import { Watch } from 'vue-property-decorator'
+import FullPageLoader from '@/shared/composables/loader/FullPageLoader.vue'
 
 Vue.registerHooks(['beforeRouteEnter'])
 
 @Options({
   components: {
     [BackTop.name]: BackTop,
+    [FullPageLoader.name]: FullPageLoader,
   },
 })
 export default class App extends Vue {
@@ -23,7 +28,7 @@ export default class App extends Vue {
   }
 
   get isInit() {
-    return this.$waitingInitAuth
+    return this.$waitingInitAuth?.value
   }
 
   @Watch('$waitingInitAuth', { deep: true }) onChange(value: Boolean) {

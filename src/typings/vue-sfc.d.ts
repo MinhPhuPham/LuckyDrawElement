@@ -8,7 +8,7 @@ declare module '@vue/runtime-core' {
     $t: Function
     $store: Store<State>
     $database: Firestore
-    $waitingInitAuth: Boolean
+    $waitingInitAuth: { value: Boolean }
     $initAuth: Function
     $notification: typeof notification
     $goto: Function

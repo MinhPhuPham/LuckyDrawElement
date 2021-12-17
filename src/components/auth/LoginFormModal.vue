@@ -49,6 +49,7 @@ import { GooglePlusOutlined, FacebookOutlined, SmileOutlined } from '@ant-design
 import LoginMixin from '@/shared/mixins/LoginMixin.vue'
 import { User } from '@firebase/auth'
 import { h } from 'vue'
+import { upsertUser } from '@/services/users'
 @Options({
   components: {
     [Modal.name]: Modal,
@@ -71,7 +72,7 @@ export default class LoginFormModal extends Vue {
   }
 
   set loginVisible(value: boolean) {
-    this.$emit('visible', value)
+    this.$emit('update:visible', value)
   }
 
   loginForm = {
@@ -87,6 +88,8 @@ export default class LoginFormModal extends Vue {
       description: `Let's enjoy our product`,
       icon: h(SmileOutlined, { style: 'color: #108ee9' }),
     })
+
+    upsertUser(this.$database, user)
 
     this.loginVisible = false
   }

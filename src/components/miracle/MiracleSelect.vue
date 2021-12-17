@@ -13,6 +13,8 @@
       <div class="miracle-box__title ml-1">
         {{ miracle.label }}
       </div>
+
+      <CheckOutlined v-if="miracle.value === value" class="grow-1 text-right mr-1" :style="{ 'text-align': 'right' }" />
     </div>
   </div>
 </template>
@@ -23,12 +25,13 @@ import { Prop } from 'vue-property-decorator'
 import { MIRACLE_DATA } from '@/shared/consts/miracle'
 
 import { Avatar } from 'ant-design-vue'
-import { UserOutlined } from '@ant-design/icons-vue'
+import { UserOutlined, CheckOutlined } from '@ant-design/icons-vue'
 
 @Options({
   components: {
     [Avatar.name]: Avatar,
     UserOutlined,
+    CheckOutlined,
   },
   name: 'ms-miracle-select',
 })
@@ -67,6 +70,18 @@ export default class MiracleSelect extends Vue {
 
   &.selected {
     box-shadow: 0 0 0 0.2rem rgb(13 110 253 / 25%);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .miracle-box {
+    width: calc((100% / 2) - 24px);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .miracle-box {
+    width: calc(100% - 24px);
   }
 }
 </style>

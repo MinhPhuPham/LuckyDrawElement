@@ -1,8 +1,12 @@
+import { IUserFull, UserModel } from '@/shared/models/user'
 import { getAuth, onAuthStateChanged, User } from '@firebase/auth'
+import { Firestore, setDoc } from '@firebase/firestore'
+import dayjs from 'dayjs'
+import { doc } from 'firebase/firestore'
 
 const auth = getAuth()
 
-const firebaseUser = () => {
+export const firebaseUser = () => {
   const currentUser = auth.currentUser
   if (currentUser?.displayName) {
     return currentUser
@@ -21,4 +25,18 @@ export const onListenAuthChange = (): Promise<User> => {
       resolve(user as User)
     })
   })
+}
+
+export const upsertUser = async (db: Firestore, user: IUserFull | User) => {
+  try {
+    await setDoc(doc(db, 'users', user.uid), {
+      ...new UserModel(user as IUserFull).parseWithoutTokenModel(),
+      lastLoginAt: dayjs().unix(),
+    })
+
+    return true
+  } catch (error) {
+    console.log('Upsert user error', error)
+    return false
+  }
 }

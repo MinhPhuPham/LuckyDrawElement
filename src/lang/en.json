@@ -13,12 +13,21 @@
   "form": {
     "email": "Email",
     "password": "Password",
-    "email_placeholder": "Please input email with @"
+    "email_placeholder": "Ex: abc@gmail.com"
+  },
+  "label": {
+    "title": "Title",
+    "description": "Description"
   },
   "action": {
     "submit": "Submit",
     "confirm": "Confirm",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "placeholder": {
+    "title": "Ex: Select gift for merry christmas",
+    "description": "Ex: This miracle will make you....."
   },
   "message": {
     "length": "Please input length match with us require",

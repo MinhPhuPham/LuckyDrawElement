@@ -1,6 +1,6 @@
 <template>
-  {{ miracleType }}
-  <ms-miracle-select v-model="miracleType" />
+  <!-- <ms-miracle-select v-model="miracleType" /> -->
+  <p></p>
 </template>
 
 <script lang="ts">

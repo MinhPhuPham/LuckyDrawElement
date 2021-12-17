@@ -4,7 +4,7 @@
     <h1 class="wrap-content__title">{{ $t('home.title') }}</h1>
     <p class="wrap-content__caption">{{ $t('home.msg') }}</p>
 
-    <a-button @click="modalVisiable = true" type="primary" shape="round" size="large">
+    <a-button v-if="!isAuth" @click="modalVisiable = true" type="primary" shape="round" size="large">
       <template #icon>
         Login Now
         <LoginOutlined />
@@ -19,7 +19,7 @@
     </a-button>
   </div>
 
-  <LoginFormModal v-if="modalVisiable" v-model:visible="modalVisiable" @visible="modalVisiable = false" />
+  <LoginFormModal v-if="!isAuth && modalVisiable" v-model:visible="modalVisiable" />
 </template>
 
 <script lang="ts">
@@ -33,6 +33,14 @@ import LoginFormModal from '@/components/auth/LoginFormModal.vue'
 })
 export default class Home extends Vue {
   modalVisiable = false
+
+  get isAuth() {
+    return this.$store.getters.isAuth
+  }
+
+  get userInfo() {
+    return this.$store.getters.userInfo
+  }
 
   created() {
     this.modalVisiable = !!this.$route.query.openLoginModal

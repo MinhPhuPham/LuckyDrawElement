@@ -53,4 +53,9 @@ export class UserModel {
       tokenManage: this.tokenManage,
     }
   }
+
+  parseWithoutTokenModel() {
+    const { tokenManage, ...model } = this.parseModel()
+    return model
+  }
 }

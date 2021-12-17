@@ -1,21 +1,25 @@
 <template>
-  <a-modal class="miracle" v-model:visible="miracleVisible">
-    <div class="login__header">
-      <h3 class="login__header-title">{{ $t('miracle.create') }}</h3>
+  <a-modal
+    :width="580"
+    :cancelText="$t('action.cancel')"
+    :okText="$t('action.save')"
+    @ok="submitForm"
+    class="miracle"
+    v-model:visible="miracleVisible"
+  >
+    <div class="miracle__header">
+      <h3 class="miracle__header-title">{{ $t('miracle.create') }}</h3>
     </div>
 
-    <a-form class="login__form" layout="vertical" :model="loginForm" :rules="loginRules" ref="loginFormRef">
-      <a-form-item name="email" label="Title">
-        <a-input v-model:value="loginForm.email" :placeholder="$t('form.email')" />
+    <a-form class="miracle__form" layout="vertical" :model="miracleForm" :rules="miracleRules" ref="miracleFormRef">
+      <a-form-item name="title" label="Title">
+        <a-input v-model:value="miracleForm.title" :placeholder="$t('placeholder.title')" />
       </a-form-item>
-      <a-form-item name="password" label="Description">
-        <a-input v-model:value="loginForm.password" :placeholder="$t('form.password')" />
+      <a-form-item name="description" label="Description">
+        <a-textarea v-model:value="miracleForm.description" :placeholder="$t('placeholder.description')" :rows="4" />
       </a-form-item>
-      <a-form-item class="login__form-action">
-        <a-space class="w-full" :size="16" direction="vertical">
-          <a-button @click="submitForm" type="primary">{{ $t('action.submit') }}</a-button>
-          <span class="block w-full text-center">or</span>
-        </a-space>
+      <a-form-item name="type" label="Type of Miracle">
+        <ms-miracle-select v-model="miracleForm.type" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -24,7 +28,10 @@
 <script lang="ts">
 import { Vue, Options } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
-import { Modal, FormItem, Form, Input } from 'ant-design-vue'
+import { Modal, FormItem, Form, Input, Textarea } from 'ant-design-vue'
+import MiracleSelect from '@/components/miracle/MiracleSelect.vue'
+
+import MiracleService from '@/services/mysteries'
 
 @Options({
   components: {
@@ -32,6 +39,8 @@ import { Modal, FormItem, Form, Input } from 'ant-design-vue'
     [Form.name]: Form,
     [FormItem.name]: FormItem,
     [Input.name]: Input,
+    [Textarea.name]: Textarea,
+    [MiracleSelect.name]: MiracleSelect,
   },
 })
 export default class MiracleFormModal extends Vue {
@@ -42,13 +51,38 @@ export default class MiracleFormModal extends Vue {
   }
 
   set miracleVisible(value: boolean) {
-    this.$emit('visible', value)
+    this.$emit('update:visible', value)
   }
+
+  miracleRules = {}
 
   miracleForm = {
     title: '',
-    caption: '',
-    miracleType: '',
+    description: '',
+    type: 1,
+  }
+
+  get miracleFormRef() {
+    // eslint-disable-next-line
+    return this.$refs.miracleFormRef as any
+  }
+
+  submitForm() {
+    this.miracleFormRef.validate().then(() => {
+      // Miracle add function
+      new MiracleService(this.$database).addMiracleItem(this.miracleForm)
+      this.miracleVisible = false
+    })
+  }
+
+  created() {
+    this.miracleRules = {
+      title: {
+        required: true,
+        message: this.$t('message.require', { field_name: this.$t('label.title') }),
+        trigger: 'blur',
+      },
+    }
   }
 }
 </script>

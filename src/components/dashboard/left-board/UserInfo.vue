@@ -5,8 +5,9 @@
         <template v-if="!userInfo.photoURL" #icon><UserOutlined /></template>
       </a-avatar>
     </div>
+
     <div class="user-info__content flex flex-column text-left">
-      <h3 class="name">{{ userInfo.userInfo || 'User Name' }}</h3>
+      <h3 class="name">{{ userInfo.displayName || 'User Name' }}</h3>
       <h5 class="contact-info">{{ userInfo.email || userInfo.phoneNumber || '' }}</h5>
     </div>
   </div>

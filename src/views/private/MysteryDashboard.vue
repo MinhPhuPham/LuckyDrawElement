@@ -19,6 +19,7 @@ import Footer from '@/components/layout/Footer.vue'
 import Dashboard from '@/components/dashboard/Dashboard.vue'
 
 import { WarningOutlined } from '@ant-design/icons-vue'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 
 @Options({
   components: {
@@ -49,14 +50,14 @@ export default class MysterDashboard extends Vue {
     })
   }
 
-  loadUserData() {
+  async loadUserData() {
     // try {
-    //   const docRef = await addDoc(collection(this.$database, 'users'), {
-    //     first: 'Ada',
+    //   await setDoc(doc(this.$database, 'users', 'qvpkqojtvAmYtMmMk3la'), {
+    //     first: 'Adaddsadsassadasdas',
     //     last: 'Lovelace',
     //     born: 1815,
     //   })
-    //   console.log('Document written with ID: ', docRef.id)
+    //   console.log('Document written with ID: ')
     // } catch (e) {
     //   console.error('Error adding document: ', e)
     // }

@@ -10,6 +10,10 @@ $positions: ('relative', 'sticky', 'absolute');
   display: block;
 }
 
+.grow-1 {
+  flex-grow: 1;
+}
+
 .flex {
   @include flexbox;
 }
@@ -28,4 +32,8 @@ $positions: ('relative', 'sticky', 'absolute');
 
 .items-center {
   @include align-items(center);
+}
+
+.justify-center {
+  @include justify-content(center);
 }
