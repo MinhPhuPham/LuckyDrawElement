@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { Firestore } from 'firebase/firestore'
-import { notification } from 'ant-design-vue'
+import { notification, Modal } from 'ant-design-vue'
 import { Store } from 'vuex'
 
 declare module '@vue/runtime-core' {
@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
     $waitingInitAuth: { value: Boolean }
     $initAuth: Function
     $notification: typeof notification
+    $confirm: typeof Modal.confirm
     $goto: Function
   }
 }
@@ -20,4 +21,5 @@ declare module '*.vue' {
   export default Vue
 }
 
-declare module 'lodash-es'
+declare module 'lodash'
+declare module 'uniqid'

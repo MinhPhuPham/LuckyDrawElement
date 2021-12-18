@@ -1,3 +1,4 @@
+import { localStorageCustom } from '@/helpers/localStorage'
 import { IUserFull, UserModel } from '@/shared/models/user'
 import { getAuth, onAuthStateChanged, User } from '@firebase/auth'
 import { Firestore, setDoc } from '@firebase/firestore'
@@ -8,11 +9,11 @@ const auth = getAuth()
 
 export const firebaseUser = () => {
   const currentUser = auth.currentUser
-  if (currentUser?.displayName) {
-    return currentUser
+  if (!currentUser) {
+    return null
   }
 
-  return currentUser?.providerData[0]
+  return currentUser?.displayName ? currentUser : { ...currentUser?.providerData[0], uid: currentUser?.uid }
 }
 
 export const checkAuth = async () => {
@@ -33,6 +34,7 @@ export const upsertUser = async (db: Firestore, user: IUserFull | User) => {
       ...new UserModel(user as IUserFull).parseWithoutTokenModel(),
       lastLoginAt: dayjs().unix(),
     })
+    localStorageCustom.setItem('user', JSON.stringify(new UserModel(user as IUserFull).parseModel()))
 
     return true
   } catch (error) {

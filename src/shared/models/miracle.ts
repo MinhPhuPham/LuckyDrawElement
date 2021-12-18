@@ -2,6 +2,7 @@ export interface IBaseMiracle {
   id?: string
   title: string
   description: string
+  creatorId?: string
   type: number
 }
 

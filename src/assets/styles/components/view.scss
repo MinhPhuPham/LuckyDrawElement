@@ -1,0 +1,23 @@
+.bg-grey {
+  background-color: $bg-grey;
+}
+
+.bg-white {
+  background-color: $bg-white;
+}
+
+.label-h3 {
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.text-unline {
+  text-decoration: underline;
+  text-underline-position: under;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  -webkit-text-decoration-color: #10766e;
+  text-decoration-color: #10766e;
+}

@@ -34,6 +34,18 @@ $positions: ('relative', 'sticky', 'absolute');
   @include align-items(center);
 }
 
+.justify-end {
+  @include justify-content(flex-end);
+}
+
 .justify-center {
   @include justify-content(center);
+}
+
+.justify-between {
+  @include justify-content(space-between);
+}
+
+.vertical-bottom {
+  vertical-align: bottom;
 }

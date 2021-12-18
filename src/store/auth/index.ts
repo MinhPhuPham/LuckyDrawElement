@@ -1,7 +1,7 @@
 import { IUser, IUserFull, UserModel } from '@/shared/models/user'
 import { AUTH_ACTION } from './actions'
 
-type TProfileState = {
+export type TProfileState = {
   user: IUser | null
   loading: boolean
 }
@@ -19,6 +19,9 @@ export default {
     },
     userInfo: (state: TProfileState) => {
       return state.user
+    },
+    userId: (state: TProfileState) => {
+      return state.user?.uid
     },
   },
   mutations: {

@@ -1,5 +1,13 @@
 <template>
-  <qrcode-vue :id="`qrblock-${key}`" :level="level" :value="value" :size="size" :ref="`qrcode-${key}`"></qrcode-vue>
+  {{ keyValue }}
+  <qrcode-vue
+    :id="`qrblock-${keyValue}`"
+    :level="level"
+    :value="value"
+    :size="size"
+    :ref="`qrcode-${keyValue}`"
+  ></qrcode-vue>
+  <button @click="copyBlobToClipboard">Click Copy</button>
 </template>
 
 <script lang="ts">
@@ -11,11 +19,12 @@ type levelQR = 'L' | 'M' | 'Q' | 'H'
 
 @Options({
   components: { QrcodeVue },
+  name: 'ms-qrcode',
 })
 export default class QRCode extends Vue {
-  @Prop({ required: true, type: String }) key!: string
-  @Prop({ default: 300, type: Number }) size!: number
   @Prop({ default: '', type: String }) url!: string
+  @Prop({ required: true, type: String }) keyValue!: string
+  @Prop({ default: 300, type: Number }) size!: number
   @Prop({ default: 'H', type: String }) level!: levelQR
 
   selectText(element: HTMLDivElement) {
@@ -40,24 +49,15 @@ export default class QRCode extends Vue {
     return done
   }
 
-  copyBlobToClipboard(blob: ClipboardItemData) {
-    // eslint-disable-next-line no-undef
-    const clipboardItemInput = new ClipboardItem({
-      'image/png': blob,
+  copyBlobToClipboard() {
+    const canvas = document.getElementById(`qrblock-${this.keyValue}`) as HTMLCanvasElement
+    canvas.toBlob((blob) => {
+      const item = new ClipboardItem({ 'image/png': blob })
+      navigator.clipboard
+        .write([item])
+        .then(() => true)
+        .catch(() => false)
     })
-    return navigator.clipboard
-      .write([clipboardItemInput])
-      .then(() => true)
-      .catch(() => false)
-  }
-
-  downloadLink(name: string, href: string) {
-    const a = document.createElement('a')
-    a.download = name
-    a.href = href
-    document.body.append()
-    a.click()
-    a.remove()
   }
 }
 </script>

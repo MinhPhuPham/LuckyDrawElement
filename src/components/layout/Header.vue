@@ -43,6 +43,7 @@ import { DownOutlined, DashboardOutlined, LogoutOutlined, UserOutlined } from '@
 import { PageHeader, RadioGroup, RadioButton, Dropdown, Menu, MenuItem, Avatar } from 'ant-design-vue'
 import { MenuInfo } from 'ant-design-vue/lib/menu/src/interface'
 import { getAuth, signOut } from 'firebase/auth'
+import { localStorageCustom } from '@/helpers/localStorage'
 @Options({
   components: {
     [PageHeader.name]: PageHeader,
@@ -60,7 +61,7 @@ import { getAuth, signOut } from 'firebase/auth'
   name: 'ms-header',
 })
 export default class Home extends Vue {
-  @Prop({ default: true, type: Boolean }) backIcon!: boolean
+  @Prop({ default: null, type: Boolean }) backIcon!: boolean | null
   @Prop({ default: '', type: String }) subTitle!: string
 
   get isAuth() {
@@ -84,13 +85,10 @@ export default class Home extends Vue {
   }
 
   doLogOut() {
-    console.log('do sign out')
-
     const auth = getAuth()
     signOut(auth).then(() => {
-      console.log('sign out')
-
       this.$goto('home')
+      localStorageCustom.clearAll()
     })
   }
 }

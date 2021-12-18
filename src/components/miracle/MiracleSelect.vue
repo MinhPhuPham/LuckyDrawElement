@@ -7,12 +7,9 @@
       :class="{ selected: miracle.value === value }"
       @click="value = miracle.value"
     >
-      <a-avatar :src="miracle.image" class="miracle-box__avatar" shape="square" :size="64">
-        <template #icon><UserOutlined /></template>
+      <a-avatar :src="require(`@/assets/${miracle.image}.png`)" class="miracle-box__avatar" shape="square" :size="64">
       </a-avatar>
-      <div class="miracle-box__title ml-1">
-        {{ miracle.label }}
-      </div>
+      <div class="miracle-box__title ml-1">{{ miracle.label }}</div>
 
       <CheckOutlined v-if="miracle.value === value" class="grow-1 text-right mr-1" :style="{ 'text-align': 'right' }" />
     </div>
@@ -52,8 +49,9 @@ export default class MiracleSelect extends Vue {
 
 <style lang="scss" scoped>
 .miracle-box {
-  width: calc((100% / 3) - 24px);
-  min-width: 250px;
+  flex: calc((100% / 3) - 24px) 0;
+  width: 100%;
+  min-width: 200px;
   margin: 0 0.5rem 1rem 0.5rem;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   cursor: pointer;
@@ -75,13 +73,13 @@ export default class MiracleSelect extends Vue {
 
 @media screen and (max-width: 1200px) {
   .miracle-box {
-    width: calc((100% / 2) - 24px);
+    flex: calc((100% / 2) - 24px) 0;
   }
 }
 
 @media screen and (max-width: 600px) {
   .miracle-box {
-    width: calc(100% - 24px);
+    flex: calc(100% - 24px) 0;
   }
 }
 </style>

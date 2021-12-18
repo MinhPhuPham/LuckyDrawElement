@@ -1,7 +1,7 @@
 <template>
   <a-divider orientation="center" class="bottom_line">
     <p style="color: lightgray; font-size: 12px; margin-top: 10px">
-      © {{ currentYear }} Viet Nam, All Rights Reserved.
+      © {{ currentYear }} Jable JohnSon, All Rights Reserved.
     </p>
   </a-divider>
 </template>

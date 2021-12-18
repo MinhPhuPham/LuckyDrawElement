@@ -6,12 +6,10 @@
 
 <script lang="ts">
 import { Vue, Options } from 'vue-class-component'
-import { collection, addDoc } from 'firebase/firestore'
 
 import Header from '@/components/layout/Header.vue'
 import Footer from '@/components/layout/Footer.vue'
 import HomePage from '@/components/home/HomePage.vue'
-import { Router } from 'vue-router'
 
 @Options({
   components: {
@@ -21,27 +19,6 @@ import { Router } from 'vue-router'
   },
 })
 export default class Home extends Vue {
-  beforeRouteEnter(to: Router, from: Router, next: Function) {
-    console.log('run to here')
-
-    next()
-  }
-
-  // log() {
-  //   console.log(this.$waitingInitAuth)
-  // }
-
-  async created() {
-    // try {
-    //   const docRef = await addDoc(collection(this.$database, 'users'), {
-    //     first: 'Ada',
-    //     last: 'Lovelace',
-    //     born: 1815,
-    //   })
-    //   console.log('Document written with ID: ', docRef.id)
-    // } catch (e) {
-    //   console.error('Error adding document: ', e)
-    // }
-  }
+  async created() {}
 }
 </script>

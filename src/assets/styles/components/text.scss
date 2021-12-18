@@ -5,3 +5,23 @@ $textAlignments: ('left', 'right', 'center');
     text-align: #{$textAlign};
   }
 }
+
+.text-max-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.text-max-2 {
+  -webkit-line-clamp: 2;
+}
+
+.text-max-2 {
+  -webkit-line-clamp: 3;
+}
+
+.text-medium {
+  font-weight: 500;
+}

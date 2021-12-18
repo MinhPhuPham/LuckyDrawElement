@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 
 import auth from './auth'
+import mysteries from './mysteries'
 
 const store = createStore({
   state: {},
@@ -8,6 +9,7 @@ const store = createStore({
   actions: {},
   modules: {
     auth,
+    mysteries,
   },
 })
 

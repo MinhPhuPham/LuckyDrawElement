@@ -19,7 +19,9 @@ import Footer from '@/components/layout/Footer.vue'
 import Dashboard from '@/components/dashboard/Dashboard.vue'
 
 import { WarningOutlined } from '@ant-design/icons-vue'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import { localStorageCustom } from '@/helpers/localStorage'
+import { User } from '@firebase/auth'
+import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
 
 @Options({
   components: {
@@ -32,7 +34,7 @@ export default class MysterDashboard extends Vue {
   async beforeRouteEnter(to: Router, from: Router, next: Function) {
     const user = await checkAuth()
     next((vm: MysterDashboard) => {
-      user ? vm.loadUserData() : vm.doLoginAction()
+      user ? vm.setLastSelectedMiracle(user as User) : vm.doLoginAction()
     })
   }
 
@@ -40,27 +42,21 @@ export default class MysterDashboard extends Vue {
     return this.$store.getters.isAuth
   }
 
+  setLastSelectedMiracle(user: User) {
+    const lastMiracle = localStorageCustom.getItem(`selectedMiracle-${user.uid}`)
+    if (lastMiracle) {
+      this.$store.commit(MYSTERIES_ACTION.SET_ITEM, JSON.parse(lastMiracle))
+    }
+  }
+
   doLoginAction() {
-    this.$router.push({ name: 'home', query: { openLoginModal: 'true' } })
     this.$notification.open({
       duration: 3,
       message: 'Need login to use this page',
       description: '',
       icon: h(WarningOutlined, { style: 'color: red' }),
     })
-  }
-
-  async loadUserData() {
-    // try {
-    //   await setDoc(doc(this.$database, 'users', 'qvpkqojtvAmYtMmMk3la'), {
-    //     first: 'Adaddsadsassadasdas',
-    //     last: 'Lovelace',
-    //     born: 1815,
-    //   })
-    //   console.log('Document written with ID: ')
-    // } catch (e) {
-    //   console.error('Error adding document: ', e)
-    // }
+    this.$router.push({ name: 'home', query: { openLoginModal: 'true' } })
   }
 }
 </script>

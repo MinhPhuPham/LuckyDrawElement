@@ -2,7 +2,9 @@
   "title": "MYSTERY SHAPE",
   "home": {
     "title": "WELCOME TO OUR PRODUCT",
-    "msg": "Let's join with us!"
+    "msg": "Let's join with us!",
+    "login_now": "Login now!",
+    "go_dashboard": "Go to Dashboard"
   },
   "login": {
     "title": "Welcome to Join Us"
@@ -32,6 +34,10 @@
   "message": {
     "length": "Please input length match with us require",
     "require": "Please input {field_name}",
-    "format": "Please input correct format"
+    "format": "Please input correct format",
+    "error": "Error!",
+    "success": "Successful!",
+    "create_miracle": "Created miracle",
+    "delete_miracle": "Deleted miracle"
   }
 }

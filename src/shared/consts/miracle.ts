@@ -1,17 +1,17 @@
 export const MIRACLE_DATA = {
   1: {
     label: 'Miracle Card', // card
-    image: '',
+    image: 'images/miracle-types/card',
     value: 1,
   },
   2: {
     label: 'Miracle Wheel', // wheel
-    image: '',
+    image: 'images/miracle-types/wheel',
     value: 2,
   },
   3: {
     label: 'Miracle Cloud', // cloud
-    image: '',
+    image: 'images/miracle-types/cloud',
     value: 3,
   },
 }

@@ -1,4 +1,4 @@
-const prefix = 'sango-corkboard-'
+const prefix = 'mystery-shape-'
 export const localStorageCustom = {
   makeKey: (key: string) => {
     return `${prefix}${key}`

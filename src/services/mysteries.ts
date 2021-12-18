@@ -1,8 +1,11 @@
+import { errorNotification, successNotification } from '@/helpers/notification'
 import { IMiracle } from '@/shared/models/miracle'
-import { collection, doc, Firestore, getDoc, onSnapshot, setDoc } from '@firebase/firestore'
+import { collection, deleteDoc, doc, Firestore, getDoc, setDoc } from '@firebase/firestore'
 import dayjs from 'dayjs'
+import store from '@/store/index'
 import { addDoc, getDocs } from 'firebase/firestore'
 import { firebaseUser } from './users'
+import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
 
 export default class MysteriesSerivce {
   private miracleId: string = ''
@@ -24,13 +27,17 @@ export default class MysteriesSerivce {
     try {
       const docRef = await addDoc(collection(this._db, `mysteries/${this.userId}/infomations`), {
         ...miracleData,
+        creatorId: this.userId,
         createdAt: dayjs().unix(),
         updatedAt: dayjs().unix(),
       })
-      console.log('Document written with ID: ', docRef.id)
+
+      const miracle = { ...miracleData, id: docRef.id }
+      store.commit(MYSTERIES_ACTION.ADD_ITEM, miracle)
+
       return docRef
-    } catch (e) {
-      console.error('Error adding document: ', e)
+    } catch (error) {
+      errorNotification('Error adding mirarcle', '', error as Error)
       return false
     }
   }
@@ -44,44 +51,21 @@ export default class MysteriesSerivce {
 
       return true
     } catch (error) {
-      console.log('Add miracle error', error)
+      errorNotification('Error! Update mirarcle', '', error as Error)
       return false
     }
   }
 
-  onListenDataSourceSingle(oldData: IMiracle, callback: Function) {
-    this.unsubscribeSnapshot = onSnapshot(
-      doc(this._db, `mysteries/${this.userId}/data_sources`, this.miracleId),
-      (documentData) => {
-        console.log('Current data: ', documentData.data())
-        callback(oldData, documentData.data())
-      },
-      (error) => {
-        console.log('Listen error', error)
-      }
-    )
-  }
-
-  offListenDataSource() {
-    this.unsubscribeSnapshot()
-  }
-
-  async loadSingleDataSourceMiracle() {
+  async deleteMiracleItem() {
     try {
-      const datas: IMiracle[] = []
-      const querySnapshot = await getDocs(
-        collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`)
-      )
-      querySnapshot.forEach((doc) => {
-        const docData = doc.data() as IMiracle
-        datas.push({ id: doc.id, ...docData })
+      await Promise.all([
+        deleteDoc(doc(this._db, `mysteries/${this.userId}/infomations`, this.miracleId)),
+        deleteDoc(doc(this._db, `mysteries/${this.userId}/data_sources`, this.miracleId)),
+      ])
 
-        // console.log(`${doc.id} => ${doc.data()}`)
-      })
-
-      return datas
+      return true
     } catch (error) {
-      console.log('Get single info miracle error', error)
+      errorNotification('Error! Can\t delete miracle', '', error as Error)
       return false
     }
   }
@@ -99,26 +83,29 @@ export default class MysteriesSerivce {
         return false
       }
     } catch (error) {
-      console.log('Get single info miracle error', error)
+      errorNotification('Error! Get info mirarcle', '', error as Error)
       return false
     }
   }
 
   async loadPaginationMiracles() {
+    store.commit(MYSTERIES_ACTION.SET_ITEMS_LOADING, true)
+    const datas: IMiracle[] = []
+
     try {
-      const datas: IMiracle[] = []
       const querySnapshot = await getDocs(collection(this._db, `mysteries/${this.userId}/infomations`))
       querySnapshot.forEach((doc) => {
         const docData = doc.data() as IMiracle
         datas.push({ id: doc.id, ...docData })
-
         // console.log(`${doc.id} => ${doc.data()}`)
       })
 
-      return datas
+      store.commit(MYSTERIES_ACTION.SET_ITEMS, datas)
     } catch (error) {
-      console.log('load Pagination Data errors', error)
-      return false
+      errorNotification('Error! Get mirarcles info', '', error as Error)
     }
+
+    store.commit(MYSTERIES_ACTION.SET_ITEMS_LOADING, false)
+    return datas
   }
 }

@@ -1,7 +1,7 @@
 <template>
-  <div class="card-module" v-show="!emptyData">
+  <div class="card-module">
     <div
-      v-for="(item, index) of dataSource"
+      v-for="(item, index) of listCard"
       :class="['img-box', { active: item.isShow }]"
       :key="index"
       @click="handleClick(index)"
@@ -23,12 +23,16 @@
 </template>
 
 <script lang="ts">
+import { ICardDataSource } from '@/shared/models/datasources'
 import { Vue, Options } from 'vue-class-component'
+import { Prop } from 'vue-property-decorator'
 
 @Options({
   components: {},
+  name: 'ms-cards',
 })
 export default class MysCardComponent extends Vue {
+  @Prop({ default: () => [], type: Array }) listCard!: ICardDataSource[]
   get emptyData() {
     return false
   }

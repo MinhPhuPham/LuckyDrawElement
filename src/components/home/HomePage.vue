@@ -1,19 +1,19 @@
 <template>
-  <div class="wrap-content">
+  <div class="wrap-content text-center">
     <img class="wrap-content__icon" src="@/assets/images/logo.png" />
     <h1 class="wrap-content__title">{{ $t('home.title') }}</h1>
     <p class="wrap-content__caption">{{ $t('home.msg') }}</p>
 
     <a-button v-if="!isAuth" @click="modalVisiable = true" type="primary" shape="round" size="large">
       <template #icon>
-        Login Now
+        <span class="mr-1">{{ $t('home.login_now') }}</span>
         <LoginOutlined />
       </template>
     </a-button>
 
-    <a-button @click="$goto('dashboard')" type="primary" shape="round" size="large">
+    <a-button v-else @click="$goto('dashboard')" type="primary" shape="round" size="large">
       <template #icon>
-        Go to Dashboard
+        <span class="mr-1">{{ $t('home.go_dashboard') }}</span>
         <LoginOutlined />
       </template>
     </a-button>
