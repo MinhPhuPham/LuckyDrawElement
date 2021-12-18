@@ -31,6 +31,8 @@ export default class LoginMixin extends Vue {
   }
 
   submitForm() {
+    console.log('debug here')
+
     this.setAuth()
 
     this.formRef.validate().then(() => {
