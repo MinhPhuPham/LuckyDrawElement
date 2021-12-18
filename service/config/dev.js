@@ -2,6 +2,7 @@
 
 const { merge } = require('webpack-merge')
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const baseWebpackConfig = require('./base')
 const cssWebpackConfig = require('./css')
 const config = require('../project.config')
@@ -32,4 +33,5 @@ module.exports = merge(baseWebpackConfig, cssWebpackConfig, {
     assets: false,
     modules: false,
   },
+  plugins: [new BundleAnalyzerPlugin()],
 })
