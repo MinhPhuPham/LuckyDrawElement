@@ -46,9 +46,13 @@ export default class LoginMixin extends Vue {
 
   loginWithGoogle() {
     const provider = new GoogleAuthProvider()
+    console.log(provider)
+
     provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
 
     this.setAuth()
+    console.log(this.auth)
+
     this.socialLoginMethod(provider)
   }
 
