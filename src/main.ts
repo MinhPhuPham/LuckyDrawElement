@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './assets/styles/index.scss'
+import './registerServiceWorker'
 
 import { message, Modal, notification, Button } from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
