@@ -41,15 +41,25 @@
 </template>
 
 <script lang="ts">
+import { h } from 'vue'
 import { Vue, Options } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Modal, FormItem, Form, Input, Row, Col, Space } from 'ant-design-vue'
-import { GooglePlusOutlined, FacebookOutlined, SmileOutlined } from '@ant-design/icons-vue'
+import { GooglePlusOutlined, FacebookOutlined, SmileOutlined, FrownOutlined } from '@ant-design/icons-vue'
+import {
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  getAuth,
+  signInWithPopup,
+  OAuthCredential,
+  signInWithEmailAndPassword,
+  Auth,
+  User,
+  AuthProvider,
+} from 'firebase/auth'
 
-import LoginMixin from '@/shared/mixins/LoginMixin.vue'
-import { User } from '@firebase/auth'
-import { h } from 'vue'
 import { upsertUser } from '@/services/users'
+
 @Options({
   components: {
     [Modal.name]: Modal,
@@ -62,7 +72,6 @@ import { upsertUser } from '@/services/users'
     GooglePlusOutlined,
     FacebookOutlined,
   },
-  mixins: [LoginMixin],
 })
 export default class LoginFormModal extends Vue {
   @Prop({ default: false, type: Boolean }) visible!: boolean
@@ -81,6 +90,71 @@ export default class LoginFormModal extends Vue {
   }
 
   loginRules = {}
+
+  auth: Auth | undefined
+
+  get formRef() {
+    // eslint-disable-next-line
+    return this.$refs.loginFormRef as any
+  }
+
+  submitForm() {
+    this.setAuth()
+
+    this.formRef.validate().then(() => {
+      signInWithEmailAndPassword(this.auth as Auth, this.loginForm.email, this.loginForm.password)
+        .then((result) => {
+          this.loginSuccessful(result.user)
+        })
+        .catch((error) => {
+          this.notifyError(error, 'Sign in')
+        })
+    })
+  }
+
+  loginWithGoogle() {
+    const provider = new GoogleAuthProvider()
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
+
+    this.setAuth()
+
+    this.socialLoginMethod(provider)
+  }
+
+  socialLoginMethod(provider: AuthProvider, isGoogle = true) {
+    signInWithPopup(this.auth as Auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result) as OAuthCredential
+        const token = credential.accessToken
+        // The signed-in user info.
+        this.loginSuccessful(result.user)
+      })
+      .catch((error) => {
+        this.notifyError(error, isGoogle ? 'Google Login' : 'Facebook Login')
+      })
+  }
+
+  setAuth() {
+    if (!this.auth) {
+      this.auth = getAuth()
+      this.auth.useDeviceLanguage()
+    }
+  }
+
+  // eslint-disable-next-line
+  notifyError(error: any, title: string) {
+    this.$notification.open({
+      message: error.code + ' ' + title,
+      description: error.errorMessage,
+      icon: h(FrownOutlined, { style: 'color: red' }),
+    })
+  }
+
+  loginWithFacebook() {
+    const provider = new FacebookAuthProvider()
+    this.socialLoginMethod(provider, false)
+  }
 
   loginSuccessful(user: User) {
     this.$notification.open({
@@ -125,11 +199,6 @@ export default class LoginFormModal extends Vue {
     }
     &-title {
       font-size: 1.4rem;
-    }
-  }
-
-  &__form {
-    &-action {
     }
   }
 }
