@@ -60,8 +60,19 @@ export default {
     [MYSTERIES_ACTION.DELETE_ITEM]: (state: TMysteriesState, id: string) => {
       state.items = state.items.filter((item) => item.id !== id)
     },
+    [MYSTERIES_ACTION.UPSERT_DATASOURCE]: (state: TMysteriesState, datasource: IDataSource) => {
+      const index = state.datasources.findIndex((data) => data.id === datasource.id)
+      if (index >= 0) {
+        state.datasources[index] = datasource
+      } else {
+        state.datasources.unshift(datasource)
+      }
+    },
     [MYSTERIES_ACTION.SET_DATASOURCE]: (state: TMysteriesState, datasources: IDataSource[]) => {
       state.datasources = datasources
+    },
+    [MYSTERIES_ACTION.DELETE_DATASOURCE]: (state: TMysteriesState, datasourceId: string) => {
+      state.datasources = state.datasources.filter((item) => item.id !== datasourceId)
     },
     [MYSTERIES_ACTION.SET_ITEMS_LOADING]: (state: TMysteriesState, loading: boolean) => {
       state.miracleLoading = loading
@@ -75,8 +86,7 @@ export default {
       { commit, rootState }: { commit: Function; rootState: { auth: TProfileState } },
       payload: { item: IMiracle; isUpdate: boolean }
     ) => {
-      const mutationAction = payload.isUpdate ? MYSTERIES_ACTION.UPDATE_ITEM : MYSTERIES_ACTION.SET_ITEM
-      commit(mutationAction, payload?.item)
+      commit(payload.isUpdate ? MYSTERIES_ACTION.UPDATE_ITEM : MYSTERIES_ACTION.SET_ITEM, payload?.item)
       saveLastChooseMiracle(rootState.auth.user?.uid as string, payload?.item)
     },
   },

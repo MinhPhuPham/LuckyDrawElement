@@ -5,12 +5,12 @@ export interface ISelectedDataSource {
 }
 
 export interface IBaseDataSource {
-  id?: string
+  id: string
   name: string
   subtitle: string
-  url: string
+  link: string
   isPlayed: boolean
-  selected: ISelectedDataSource
+  selected?: ISelectedDataSource | null
 }
 
 export interface ICardDataSource extends IBaseDataSource {

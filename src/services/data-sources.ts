@@ -5,8 +5,7 @@ import store from '@/store'
 import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
 import { collection, doc, Firestore, getDoc, onSnapshot, setDoc, writeBatch } from '@firebase/firestore'
 import dayjs from 'dayjs'
-import uniqid from 'uniqid'
-import { addDoc, getDocs } from 'firebase/firestore'
+import { addDoc, deleteDoc, getDocs } from 'firebase/firestore'
 import { firebaseUser } from './users'
 
 export default class DatasourcesSerivce {
@@ -52,8 +51,7 @@ export default class DatasourcesSerivce {
       )
       querySnapshot.forEach((doc) => {
         const docData = doc.data() as IDataSource
-        datas.push({ id: doc.id, ...docData })
-        // console.log(`${doc.id} => ${doc.data()}`)
+        datas.push({ ...docData, id: doc.id })
       })
       store.commit(MYSTERIES_ACTION.SET_DATASOURCE, datas)
     } catch (error) {
@@ -62,6 +60,30 @@ export default class DatasourcesSerivce {
 
     store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
     return datas
+  }
+
+  async upsertDataSource(datasource: IDataSource) {
+    try {
+      await setDoc(doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, datasource.id), {
+        ...datasource,
+      })
+      store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, datasource)
+      return true
+    } catch (error) {
+      errorNotification('Error! Upsert datasource failed', '', error as Error)
+      return false
+    }
+  }
+
+  async deleteDataSource(datasourceId: string) {
+    try {
+      await deleteDoc(doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, datasourceId))
+      store.commit(MYSTERIES_ACTION.DELETE_DATASOURCE, datasourceId)
+      return true
+    } catch (error) {
+      errorNotification('Error! Can\t delete miracle', '', error as Error)
+      return false
+    }
   }
 
   async addMultipleDatasource(datasources: IDataSource[]) {

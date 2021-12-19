@@ -87,10 +87,8 @@ export default class MysteriesSerivce {
       const docSnap = await getDoc(docRef)
 
       if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data())
         return docSnap.data()
       } else {
-        console.log('No such document!')
         return false
       }
     } catch (error) {

@@ -46,6 +46,8 @@
     "create_miracle": "Created miracle",
     "delete_miracle": "Deleted miracle",
     "update_miracle": "Updated miracle",
+    "save_datasource": "Saved datasource",
+    "delete_datasource": "Deleted datasource",
     "sure": "Sure to {action_name}?"
   }
 }

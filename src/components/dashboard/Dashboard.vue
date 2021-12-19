@@ -107,6 +107,7 @@ export default class DashBoard extends Vue {
     this.$store.dispatch(MYSTERIES_ACTION.SET_ITEM, { item })
 
     // Get datasource info
+    this.$store.commit(MYSTERIES_ACTION.SET_DATASOURCE, [])
     await new DatasourcesSerivce(this.$database, item.id).loadSingleDataSourceMiracle()
 
     // Set recently info

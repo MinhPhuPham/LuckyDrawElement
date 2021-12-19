@@ -15,7 +15,7 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/play',
+    path: '/play/:userId',
     name: 'play',
     component: () => import(/* webpackChunkName: "dashboard" */ '../views/public/MysteryPlayWrapper.vue'),
     redirect: {
@@ -28,17 +28,17 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "dashboard" */ '../views/public/MysteryRedirect.vue'),
       },
       {
-        path: 'mys-card/:id',
+        path: 'mys-card/:miracleId',
         name: 'mysCard',
         component: () => import(/* webpackChunkName: "card" */ '../views/public/MysteryCardPlay.vue'),
       },
       {
-        path: 'mys-cloud/:id',
+        path: 'mys-cloud/:miracleId',
         name: 'mysCloud',
         component: () => import(/* webpackChunkName: "cloud" */ '../views/public/MysteryCloudPlay.vue'),
       },
       {
-        path: 'mys-wheel/:id',
+        path: 'mys-wheel/:miracleId',
         name: 'mysWheel',
         component: () => import(/* webpackChunkName: "wheel" */ '../views/public/MysteryWheelPlay.vue'),
       },
