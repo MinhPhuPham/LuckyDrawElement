@@ -33,5 +33,5 @@ module.exports = merge(baseWebpackConfig, cssWebpackConfig, {
     assets: false,
     modules: false,
   },
-  plugins: [new BundleAnalyzerPlugin()],
+  // plugins: [new BundleAnalyzerPlugin()],
 })

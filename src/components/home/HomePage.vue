@@ -44,6 +44,7 @@ export default class Home extends Vue {
 
   created() {
     this.modalVisiable = !!this.$route.query.openLoginModal
+    console.log(process.env.NODE_ENV)
   }
 }
 </script>

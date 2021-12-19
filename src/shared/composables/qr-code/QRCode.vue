@@ -1,24 +1,34 @@
 <template>
-  {{ keyValue }}
-  <qrcode-vue
-    :id="`qrblock-${keyValue}`"
-    :level="level"
-    :value="value"
-    :size="size"
-    :ref="`qrcode-${keyValue}`"
-  ></qrcode-vue>
-  <button @click="copyBlobToClipboard">Click Copy</button>
+  <div class="flex items-center">
+    <qrcode-vue
+      :id="`qrblock-${keyValue}`"
+      :level="level"
+      :value="urlParse"
+      :size="size"
+      :ref="`qrcode-${keyValue}`"
+    ></qrcode-vue>
+    <a-tooltip :title="$t(isCopied ? 'action.copied' : 'action.copy')" placement="right">
+      <a-button class="ml-1" @click="copyBlobToClipboard" type="dashed" size="small">
+        <template #icon>
+          <CopyOutlined v-if="!isCopied" />
+          <CheckOutlined v-else :style="{ color: '#1890ff' }" />
+        </template>
+      </a-button>
+    </a-tooltip>
+  </div>
 </template>
 
 <script lang="ts">
 import { Vue, Options } from 'vue-class-component'
 import QrcodeVue from 'qrcode.vue'
+import { Tooltip } from 'ant-design-vue'
+import { CopyOutlined, CheckOutlined } from '@ant-design/icons-vue'
 import { Prop } from 'vue-property-decorator'
 
 type levelQR = 'L' | 'M' | 'Q' | 'H'
 
 @Options({
-  components: { QrcodeVue },
+  components: { QrcodeVue, CopyOutlined, CheckOutlined, [Tooltip.name]: Tooltip },
   name: 'ms-qrcode',
 })
 export default class QRCode extends Vue {
@@ -27,36 +37,20 @@ export default class QRCode extends Vue {
   @Prop({ default: 100, type: Number }) size!: number
   @Prop({ default: 'H', type: String }) level!: levelQR
 
-  selectText(element: HTMLDivElement) {
-    if (window.getSelection) {
-      const selection = window.getSelection() as Selection
-      const range = document.createRange()
-      range.selectNodeContents(element)
-      selection.removeAllRanges()
-      selection.addRange(range)
-    }
-  }
+  isCopied = false
 
-  copyBlobToClipboardFirefox(href: string) {
-    const img = document.createElement('img')
-    img.src = href
-    const div = document.createElement('div') as HTMLDivElement
-    div.appendChild(img)
-    document.body.appendChild(div)
-    this.selectText(div)
-    const done = document.execCommand('Copy')
-    document.body.removeChild(div)
-    return done
+  get urlParse() {
+    this.isCopied = false
+    return this.url
   }
 
   copyBlobToClipboard() {
     const canvas = document.getElementById(`qrblock-${this.keyValue}`) as HTMLCanvasElement
     canvas.toBlob((blob) => {
       const item = new ClipboardItem({ 'image/png': blob })
-      navigator.clipboard
-        .write([item])
-        .then(() => true)
-        .catch(() => false)
+      navigator.clipboard.write([item]).finally(() => {
+        this.isCopied = true
+      })
     })
   }
 }

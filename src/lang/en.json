@@ -26,7 +26,12 @@
     "submit": "Submit",
     "confirm": "Confirm",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "ok": "OK",
+    "edit": "Edit",
+    "delete": "Delete",
+    "copy": "Copy",
+    "copied": "Copied"
   },
   "placeholder": {
     "title": "Ex: Select gift for merry christmas",
@@ -39,6 +44,7 @@
     "error": "Error!",
     "success": "Successful!",
     "create_miracle": "Created miracle",
-    "delete_miracle": "Deleted miracle"
+    "delete_miracle": "Deleted miracle",
+    "sure": "Sure to {action_name}?"
   }
 }

@@ -1,6 +1,6 @@
 import { errorNotification, successNotification } from '@/helpers/notification'
 import { IMiracle } from '@/shared/models/miracle'
-import { collection, deleteDoc, doc, Firestore, getDoc, setDoc } from '@firebase/firestore'
+import { collection, deleteDoc, doc, Firestore, getDoc, orderBy, query, setDoc, updateDoc } from '@firebase/firestore'
 import dayjs from 'dayjs'
 import store from '@/store/index'
 import { addDoc, getDocs } from 'firebase/firestore'
@@ -56,6 +56,17 @@ export default class MysteriesSerivce {
     }
   }
 
+  async setRecentlyAccess() {
+    try {
+      return await updateDoc(doc(this._db, `mysteries/${this.userId}/infomations`, this.miracleId), {
+        updatedAt: dayjs().unix(),
+      })
+    } catch (error) {
+      console.log('Error! Set recently into DB', error)
+      return false
+    }
+  }
+
   async deleteMiracleItem() {
     try {
       await Promise.all([
@@ -93,12 +104,15 @@ export default class MysteriesSerivce {
     const datas: IMiracle[] = []
 
     try {
-      const querySnapshot = await getDocs(collection(this._db, `mysteries/${this.userId}/infomations`))
-      querySnapshot.forEach((doc) => {
-        const docData = doc.data() as IMiracle
-        datas.push({ id: doc.id, ...docData })
-        // console.log(`${doc.id} => ${doc.data()}`)
-      })
+      const informationsRef = collection(this._db, `mysteries/${this.userId}/infomations`)
+      const queryDB = query(informationsRef, orderBy('updatedAt', 'desc'))
+      const querySnapshot = await getDocs(queryDB)
+      if (!querySnapshot.empty) {
+        querySnapshot.docs.forEach((doc) => {
+          const docData = doc.data() as IMiracle
+          datas.push({ id: doc.id, ...docData })
+        })
+      }
 
       store.commit(MYSTERIES_ACTION.SET_ITEMS, datas)
     } catch (error) {

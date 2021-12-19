@@ -8,5 +8,5 @@ import { Vue, Options } from 'vue-class-component'
 @Options({
   components: {},
 })
-export default class MysterySwitchType extends Vue {}
+export default class Home extends Vue {}
 </script>

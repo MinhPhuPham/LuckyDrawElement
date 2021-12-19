@@ -11,13 +11,19 @@
         <template #icon>
           <DeleteOutlined />
         </template>
-        Delete All Selected
+        Delete All Selected {{ loading }}
       </a-button>
     </div>
     <div></div>
   </div>
 
-  <a-table :columns="columns" :data-source="dataSource" :pagination="{ position: ['topLeft', 'bottomRight'] }" bordered>
+  <a-table
+    :loading="loading"
+    :columns="columns"
+    :data-source="dataSource"
+    :pagination="{ position: ['topLeft', 'bottomRight'] }"
+    bordered
+  >
     <template #bodyCell="{ column, text, record }">
       <template v-if="['name', 'age', 'address'].includes(column.dataIndex)">
         <div>
@@ -28,9 +34,9 @@
           />
           <template v-else>
             {{ text }}
-            <template v-if="column.dataIndex === 'address'"
-              ><ms-qrcode level="L" :url="text" :keyValue="text"
-            /></template>
+            <template v-if="column.dataIndex === 'address'">
+              <ms-qrcode level="L" :url="text" :keyValue="text" />
+            </template>
           </template>
         </div>
       </template>
@@ -47,6 +53,7 @@
           </span>
         </div>
       </template>
+      <!-- <component :is="components[selectedMiracle.type]" v-bind="{ column, text, record }"></component> -->
     </template>
   </a-table>
 </template>
@@ -56,6 +63,12 @@ import { Vue, Options } from 'vue-class-component'
 import cloneDeep from 'lodash/cloneDeep'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import { Table, Input, Popconfirm } from 'ant-design-vue'
+
+import { MiracleType } from '@/shared/enums/miracle-type'
+
+import CardTableTemplate from '@/shared/composables/table/templates/CardTableTemplate.vue'
+import WheelTableTemplate from '@/shared/composables/table/templates/WheelTableTemplate.vue'
+import CloudTableTemplate from '@/shared/composables/table/templates/CloudTableTemplate.vue'
 import QRCode from '@/shared/composables/qr-code/QRCode.vue'
 
 interface DataItem {
@@ -77,7 +90,25 @@ interface DataItem {
   name: 'ms-datasource',
 })
 export default class DataSourceTable extends Vue {
+  get loading() {
+    return this.$store.getters.dataSourceLoading
+  }
+
+  get selectedMiracle() {
+    return this.$store.getters.miracle
+  }
+
+  components = {
+    [MiracleType.MIRACLE_CARD]: CardTableTemplate,
+    [MiracleType.MIRACLE_WHEEL]: WheelTableTemplate,
+    [MiracleType.MIRACLE_CLOUD]: CloudTableTemplate,
+  }
+
   columns = [
+    {
+      title: 'stt',
+      dataIndex: '',
+    },
     {
       title: 'name',
       dataIndex: 'name',
@@ -120,7 +151,7 @@ export default class DataSourceTable extends Vue {
   handleClear() {}
 
   created() {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 20; i++) {
       this.dataSource.push({
         key: i.toString(),
         name: `Edrward ${i}`,

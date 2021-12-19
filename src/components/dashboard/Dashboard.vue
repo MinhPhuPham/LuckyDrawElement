@@ -108,6 +108,9 @@ export default class DashBoard extends Vue {
 
     // Get datasource info
     await new DatasourcesSerivce(this.$database, item.id).loadSingleDataSourceMiracle()
+
+    // Set recently info
+    new MysteriesSerivce(this.$database, item.id).setRecentlyAccess()
   }
 
   confirmDeleteMiracle(id: string) {

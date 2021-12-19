@@ -60,7 +60,7 @@ export default class DatasourcesSerivce {
       errorNotification('Error! Get data-sources mirarcle', '', error as Error)
     }
 
-    store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, true)
+    store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
     return datas
   }
 
@@ -68,7 +68,8 @@ export default class DatasourcesSerivce {
     try {
       const batch = writeBatch(this._db)
       datasources.forEach((data) => {
-        const docRef = doc(collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`))
+        //doc(collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`))
+        const docRef = doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, data.id as string)
         batch.set(docRef, data)
       })
 

@@ -22,6 +22,8 @@ import { WarningOutlined } from '@ant-design/icons-vue'
 import { localStorageCustom } from '@/helpers/localStorage'
 import { User } from '@firebase/auth'
 import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
+import DatasourcesSerivce from '@/services/data-sources'
+import { IMiracle } from '@/shared/models/miracle'
 
 @Options({
   components: {
@@ -45,7 +47,9 @@ export default class MysterDashboard extends Vue {
   setLastSelectedMiracle(user: User) {
     const lastMiracle = localStorageCustom.getItem(`selectedMiracle-${user.uid}`)
     if (lastMiracle) {
-      this.$store.commit(MYSTERIES_ACTION.SET_ITEM, JSON.parse(lastMiracle))
+      const parser = JSON.parse(lastMiracle) as IMiracle
+      this.$store.commit(MYSTERIES_ACTION.SET_ITEM, parser)
+      new DatasourcesSerivce(this.$database, parser.id).loadSingleDataSourceMiracle()
     }
   }
 
