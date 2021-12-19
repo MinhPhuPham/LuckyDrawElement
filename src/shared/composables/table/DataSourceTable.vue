@@ -56,14 +56,18 @@
         <span v-else>-</span>
       </template>
       <template v-else-if="column.key === 'link'">
-        <TypographyParagraph style="margin-bottom: 0.3rem" code :copyable="{ text }"> Click copy </TypographyParagraph>
-        <AppstoreTwoTone @click="toggleQRViewer(record.id)" />
-        <a class="ml-haft">QR code</a>
+        <TypographyParagraph style="margin-bottom: 0.5rem" code :copyable="{ text }">
+          {{ $t('label.copy_link') }}
+        </TypographyParagraph>
+        <span @click="toggleQRViewer(record.id)">
+          <AppstoreTwoTone />
+          <a class="ml-haft">QR code</a>
+        </span>
         <ms-qrcode v-if="qrCodeViewer[record.id]" level="L" :url="text" :keyValue="text" />
       </template>
       <template v-else-if="column.key === 'action'">
         <span v-if="editableData[record.id]">
-          <a @click="onSave(record.id)">Save</a>
+          <a class="mr-haft" @click="onSave(record.id)">Save</a>
           <a-popconfirm title="Sure to cancel?" @confirm="cancel(record.id)">
             <a>Cancel</a>
           </a-popconfirm>

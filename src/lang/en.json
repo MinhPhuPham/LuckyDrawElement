@@ -20,7 +20,8 @@
   },
   "label": {
     "title": "Title",
-    "description": "Description"
+    "description": "Description",
+    "copy_link": "Click to copy"
   },
   "action": {
     "submit": "Submit",

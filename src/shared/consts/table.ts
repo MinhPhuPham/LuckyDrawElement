@@ -15,7 +15,7 @@ export const BASE_COLUMNS: ColumnType[] = [
     dataIndex: 'subtitle',
     key: 'subtitle',
     resizable: true,
-    width: 200,
+    width: 150,
     minWidth: 100,
     maxWidth: 300,
   },
