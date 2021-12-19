@@ -251,7 +251,7 @@ export default class DataSourceTable extends Vue {
   }
 
   renderLinkShare(resourceId: string) {
-    return this.$router.resolve({
+    const path = this.$router.resolve({
       name: this.routerName[this.selectedMiracle.type as MiracleType],
       params: {
         userId: this.userId,
@@ -261,6 +261,8 @@ export default class DataSourceTable extends Vue {
         resourceId: resourceId,
       },
     })?.fullPath
+
+    return location.origin + path
   }
 
   async saveAllEdit() {
