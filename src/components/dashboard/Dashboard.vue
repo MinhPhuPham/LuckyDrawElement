@@ -104,7 +104,7 @@ export default class DashBoard extends Vue {
   }
 
   async selectMiracle(item: IMiracle) {
-    this.$store.dispatch(MYSTERIES_ACTION.SET_ITEM, item)
+    this.$store.dispatch(MYSTERIES_ACTION.SET_ITEM, { item })
 
     // Get datasource info
     await new DatasourcesSerivce(this.$database, item.id).loadSingleDataSourceMiracle()

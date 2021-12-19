@@ -33,7 +33,7 @@ import { IMiracle } from '@/shared/models/miracle'
 import { FormItem, Form, Input, Textarea } from 'ant-design-vue'
 import MiracleSelect from '@/components/miracle/MiracleSelect.vue'
 
-import MiracleService from '@/services/mysteries'
+import MysteriesSerivce from '@/services/mysteries'
 import { successNotification } from '@/helpers/notification'
 
 @Options({
@@ -67,7 +67,7 @@ export default class MiraInfoForm extends Vue {
   @Watch('miracleFormData', { deep: true, immediate: true })
   onFormDataChange() {
     if (this.miracleFormData) {
-      this.miracleForm = { ...this.miracleFormData, ...cloneDeep(this.miracleFormData) }
+      this.miracleForm = { ...this.miracleForm, ...cloneDeep(this.miracleFormData) }
     }
   }
 
@@ -85,12 +85,24 @@ export default class MiraInfoForm extends Vue {
   createMiracle() {
     this.miracleFormRef.validate().then(async () => {
       // Miracle add function
-      await new MiracleService(this.$database).addMiracleItem(this.miracleForm).then((res) => {
+      await new MysteriesSerivce(this.$database).addMiracleItem(this.miracleForm).then((res) => {
         if (res) {
           successNotification(`${this.$t('message.success')} ${this.$t('message.create_miracle')}`)
           this.$emit('createdMiracle')
         }
       })
+    })
+  }
+
+  updateMiracle() {
+    this.miracleFormRef.validate().then(async () => {
+      await new MysteriesSerivce(this.$database, this.miracleFormData.id)
+        .setMiracleItem(this.miracleForm)
+        .then((res) => {
+          if (res) {
+            successNotification(`${this.$t('message.success')} ${this.$t('message.update_miracle')}`)
+          }
+        })
     })
   }
 

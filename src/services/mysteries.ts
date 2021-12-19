@@ -1,4 +1,4 @@
-import { errorNotification, successNotification } from '@/helpers/notification'
+import { errorNotification } from '@/helpers/notification'
 import { IMiracle } from '@/shared/models/miracle'
 import { collection, deleteDoc, doc, Firestore, getDoc, orderBy, query, setDoc, updateDoc } from '@firebase/firestore'
 import dayjs from 'dayjs'
@@ -11,7 +11,6 @@ export default class MysteriesSerivce {
   private miracleId: string = ''
   private userId: string = ''
   private _db: Firestore
-  private unsubscribeSnapshot: Function = () => true
 
   constructor(db: Firestore, miracleId?: string, userId?: string) {
     this.miracleId = miracleId || ''
@@ -49,6 +48,7 @@ export default class MysteriesSerivce {
         updatedAt: dayjs().unix(),
       })
 
+      store.dispatch(MYSTERIES_ACTION.SET_ITEM, { item: miracleData, isUpdate: true })
       return true
     } catch (error) {
       errorNotification('Error! Update mirarcle', '', error as Error)

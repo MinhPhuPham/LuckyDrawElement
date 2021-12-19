@@ -32,6 +32,8 @@ export default class Home extends Vue {
     return this.$store.getters.miracle
   }
 
-  updateSelectedMiracle() {}
+  updateSelectedMiracle() {
+    ;(this.$refs.miraInfoUpdateForm as MiracleInfoForm).updateMiracle()
+  }
 }
 </script>

@@ -45,6 +45,7 @@
     "success": "Successful!",
     "create_miracle": "Created miracle",
     "delete_miracle": "Deleted miracle",
+    "update_miracle": "Updated miracle",
     "sure": "Sure to {action_name}?"
   }
 }

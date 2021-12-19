@@ -1,4 +1,4 @@
-import { localStorageCustom } from '@/helpers/localStorage'
+import { saveLastChooseMiracle } from '@/helpers/utils'
 import { IDataSource } from '@/shared/models/datasources'
 import { IMiracle } from '@/shared/models/miracle'
 import { TProfileState } from '../auth'
@@ -46,6 +46,13 @@ export default {
     [MYSTERIES_ACTION.SET_ITEM]: (state: TMysteriesState, item: IMiracle) => {
       state.item = item
     },
+    [MYSTERIES_ACTION.UPDATE_ITEM]: (state: TMysteriesState, item: IMiracle) => {
+      state.item = item
+      const itemIndex = state.items.findIndex((itemFind) => itemFind.id === item.id)
+      if (itemIndex >= 0) {
+        state.items[itemIndex] = item
+      }
+    },
     [MYSTERIES_ACTION.ADD_ITEM]: (state: TMysteriesState, item: IMiracle) => {
       state.items.unshift(item)
       state.item = item
@@ -64,21 +71,13 @@ export default {
     },
   },
   actions: {
-    [MYSTERIES_ACTION.SET_ITEM]: (state: TMysteriesState, item: IMiracle) => {
-      state.item = item
-    },
     [MYSTERIES_ACTION.SET_ITEM]: async (
       { commit, rootState }: { commit: Function; rootState: { auth: TProfileState } },
-      item: IMiracle
+      payload: { item: IMiracle; isUpdate: boolean }
     ) => {
-      commit(MYSTERIES_ACTION.SET_ITEM, item)
-      const userId = rootState.auth.user?.uid
-
-      if (userId && item) {
-        localStorageCustom.setItem(`selectedMiracle-${userId}`, JSON.stringify(item))
-      } else if (userId && !item) {
-        localStorageCustom.removeItem(`selectedMiracle-${userId}`)
-      }
+      const mutationAction = payload.isUpdate ? MYSTERIES_ACTION.UPDATE_ITEM : MYSTERIES_ACTION.SET_ITEM
+      commit(mutationAction, payload?.item)
+      saveLastChooseMiracle(rootState.auth.user?.uid as string, payload?.item)
     },
   },
 }
