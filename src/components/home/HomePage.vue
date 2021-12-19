@@ -1,8 +1,8 @@
 <template>
   <div class="wrap-content text-center">
     <img class="wrap-content__icon" src="@/assets/images/logo.png" />
-    <h1 class="wrap-content__title">{{ $t('home.title') }}</h1>
-    <p class="wrap-content__caption">{{ $t('home.msg') }}</p>
+    <h1 class="wrap-content__title text-medium">{{ $t(isAuth ? 'home.greetings' : 'home.title') }}</h1>
+    <p class="wrap-content__caption" v-if="!isAuth">{{ $t('home.msg') }}</p>
 
     <a-button v-if="!isAuth" @click="modalVisiable = true" type="primary" shape="round" size="large">
       <template #icon>
