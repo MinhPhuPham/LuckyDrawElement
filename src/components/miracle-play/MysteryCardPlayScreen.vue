@@ -1,14 +1,12 @@
 <template>
-  <div class="mys-card-play">
-    <div class="card-play__head text-center" v-if="selectedMiracle">
-      <h1>{{ selectedMiracle.title }}</h1>
-      <p>{{ selectedMiracle.description }}</p>
-    </div>
+  <div class="card-play__head text-center" v-if="selectedMiracle">
+    <h1>{{ selectedMiracle.title }}</h1>
+    <p>{{ selectedMiracle.description }}</p>
+  </div>
 
-    <div class="card-play__content">
-      <ms-cards v-if="!isAuth" :currentResourceId="resourceSelected.id"></ms-cards>
-      <ms-datasource :isViewMode="true" v-if="selectedMiracle && isAuth" />
-    </div>
+  <div class="card-play__content">
+    <ms-cards v-if="!isAuth" :currentResourceId="resourceSelected.id"></ms-cards>
+    <ms-datasource :isViewMode="true" v-if="selectedMiracle && isAuth" />
   </div>
 </template>
 
@@ -82,25 +80,23 @@ export default class MysterCardPlayScreen extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.mys-card-play {
-  .card-play {
-    &__head {
-      h1 {
-        margin-top: 1.5rem;
-      }
-
-      p {
-        color: rgba(107, 114, 128);
-        font-size: 1rem;
-        line-height: 1.5;
-      }
+.card-play {
+  &__head {
+    h1 {
+      margin-top: 1.5rem;
     }
 
-    &__content {
-      width: 90%;
-      max-width: 1600px;
-      margin: 0 auto;
+    p {
+      color: rgba(107, 114, 128);
+      font-size: 1rem;
+      line-height: 1.5;
     }
+  }
+
+  &__content {
+    width: 90%;
+    max-width: 1600px;
+    margin: 0 auto;
   }
 }
 </style>

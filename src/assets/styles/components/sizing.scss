@@ -2,14 +2,14 @@
   width: 100%;
 }
 
-// .w-full-vw {
-//   width: 100vw;
-// }
-
 .h-full {
   height: 100%;
 }
 
 .h-100h {
   height: 100vh;
+}
+
+.h-85vh {
+  min-height: 85vh;
 }
