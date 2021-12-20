@@ -13,7 +13,7 @@ import './helpers/firebase'
 import { database, authInit } from './helpers/firebase'
 import { upsertUser } from '@/services/users'
 import { localStorageCustom } from './helpers/localStorage'
-const isHaveUser = !!localStorageCustom.getUser()
+const isHaveUser = localStorageCustom.getIsUserExist()
 const app = createApp(App)
 
 app.config.globalProperties.$message = message

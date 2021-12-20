@@ -10,7 +10,9 @@ export function errorNotification(title: string, description = '', error?: Error
     placement: 'bottomRight',
   })
 
-  console.log(title, error)
+  if (error) {
+    console.log(title, error)
+  }
 }
 
 export function successNotification(title: string, description = '') {

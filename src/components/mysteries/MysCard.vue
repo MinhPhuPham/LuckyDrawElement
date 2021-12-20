@@ -5,7 +5,7 @@
       :class="['img-box', { active: item.isShow }]"
       :key="item.id + index"
       :style="{ width: `${cardWidth}px`, height: `${cardHeight}px` }"
-      @click="handleClick(index)"
+      @click="handleClick(index, item)"
     >
       <div class="back">
         <a class="back_title">{{ $t('label.no_num') }}{{ index + 1 }}</a>
@@ -28,14 +28,17 @@
 
 <script lang="ts">
 import { ICardDataSource } from '@/shared/models/datasources'
-import { MIRACEL_CARD_ACTION } from '@/store/mysteries/actions'
+import { MIRACEL_CARD_ACTION, MYSTERIES_ACTION } from '@/store/mysteries/actions'
 import { Vue, Options } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import InnerLoader from '@/shared/composables/loader/InnerLoader.vue'
 import Empty from '@/shared/composables/empty/Empty.vue'
 import ConfettiService from '@/helpers/confetti'
 import { MIRACLE_RESPONSIVE } from '@/shared/consts/miracle-card-responsive'
-import { ranDomCardItems } from '@/helpers/utils'
+import DatasourcesSerivce from '@/services/data-sources'
+import { IMiracle } from '@/shared/models/miracle'
+import { errorNotification, successNotification } from '@/helpers/notification'
+
 @Options({
   components: {
     [InnerLoader.name]: InnerLoader,
@@ -61,6 +64,10 @@ export default class MysCardComponent extends Vue {
     return this.$store.getters.selectedDatasource
   }
 
+  get selectedMiracle(): IMiracle {
+    return this.$store.getters.miracle
+  }
+
   get dataSourceLoading() {
     return this.$store.getters.dataSourceLoading
   }
@@ -70,15 +77,36 @@ export default class MysCardComponent extends Vue {
   }
 
   get dataSources(): ICardDataSource[] {
-    const datasources = this.$store.getters.datasources
-    return this.isPreview ? datasources : ranDomCardItems(datasources, this.currentResourceId)
+    return this.$store.getters.datasources
   }
 
-  async handleClick(index: number) {
-    if (this.isPreview) {
-      this.$store.commit(MIRACEL_CARD_ACTION.SET_SELECT_CARD, index)
+  async handleClick(index: number, itemSelected: ICardDataSource) {
+    if (this.selectedCard) {
+      return errorNotification('Opps! Seems you selected. Manager setting can only be selected once')
     }
+    this.isPreview ? this.successChoosen(index) : this.productAction(index, itemSelected)
+  }
 
+  async productAction(index: number, itemSelected: ICardDataSource) {
+    const datasourceService = new DatasourcesSerivce(this.$database, this.selectedMiracle.id)
+    const response = await datasourceService.checkDataResouceSelected(itemSelected.id)
+    const resourceChooseId = sessionStorage.getItem('resourceChooseId') as string
+
+    if (!response) {
+      errorNotification('Opps! Have error occurred. Please select another after refesh')
+      resourceChooseId && (await datasourceService.loadSingleDataSourceMiracle(true, resourceChooseId))
+      return
+    }
+    resourceChooseId &&
+      (await datasourceService.setSelectedDataResource(resourceChooseId, itemSelected).then(() => {
+        this.successChoosen(index)
+        successNotification(`${this.$t('message.success')} ${this.$t('message.great_selected')}`)
+        this.$store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, { id: resourceChooseId, isPlayed: true })
+      }))
+  }
+
+  successChoosen(index: number) {
+    this.$store.commit(MIRACEL_CARD_ACTION.SET_SELECT_CARD, index)
     this.celebrate()
   }
 
@@ -91,13 +119,17 @@ export default class MysCardComponent extends Vue {
   }
 
   celebrate() {
-    const confetti = new ConfettiService(this.$refs.mysCardRef as HTMLDivElement)
-    confetti.celebrate({
-      particleCount: 2,
-      angle: 60,
-      spread: 55,
-      origin: { x: 1, y: 1 },
-    })
+    for (let index = 0; index < 3; index++) {
+      setTimeout(() => {
+        const confetti = new ConfettiService(this.$refs.mysCardRef as HTMLDivElement)
+        confetti.celebrate({
+          particleCount: 4,
+          angle: 90,
+          spread: 55,
+          origin: { x: 1, y: 1 },
+        })
+      }, 500)
+    }
   }
 
   handleResizeChange() {
@@ -184,6 +216,7 @@ $cardHeight: 350px;
         font-size: 1.5rem;
         font-weight: bold;
         z-index: 1;
+        background-color: #fafbfdc2;
       }
 
       .subtitle_item {

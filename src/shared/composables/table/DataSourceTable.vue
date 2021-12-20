@@ -8,7 +8,7 @@
     </a-button> -->
     <span></span>
 
-    <div>
+    <div v-if="!isViewMode">
       <a-button class="mr-1" @click="addDefault">
         <template #icon>
           <PlusOutlined />
@@ -22,6 +22,12 @@
         <span class="text-medium">Save</span>
       </a-button>
     </div>
+    <a-button @click="$goto('dashboard')" v-else type="primary">
+      <template #icon>
+        <SettingOutlined />
+      </template>
+      <span class="text-medium">Settings</span>
+    </a-button>
   </div>
 
   <!-- :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" -->
@@ -52,8 +58,8 @@
       </template>
       <template v-else-if="column.key === 'selected'">
         <a-tag color="geekblue" v-if="record.selected">
-          {{ selected.name }} <br />
-          {{ selected.dateSelected }}
+          {{ record.selected.name }} <br />
+          {{ record.selected.dateSelected }}
         </a-tag>
         <span v-else>-</span>
       </template>
@@ -114,6 +120,7 @@ import {
   CloseSquareTwoTone,
   EditOutlined,
   AppstoreTwoTone,
+  SettingOutlined,
 } from '@ant-design/icons-vue'
 import { Table } from 'ant-design-vue'
 
@@ -131,6 +138,7 @@ import QRCode from '@/shared/composables/qr-code/QRCode.vue'
 import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
 import DatasourcesSerivce from '@/services/data-sources'
 import { successNotification } from '@/helpers/notification'
+import { Prop } from 'vue-property-decorator'
 
 @Options({
   components: {
@@ -147,10 +155,13 @@ import { successNotification } from '@/helpers/notification'
     SaveOutlined,
     EditOutlined,
     AppstoreTwoTone,
+    SettingOutlined,
   },
   name: 'ms-datasource',
 })
 export default class DataSourceTable extends Vue {
+  @Prop({ default: false, type: Boolean }) isViewMode!: boolean
+
   get loading() {
     return this.$store.getters.dataSourceLoading
   }

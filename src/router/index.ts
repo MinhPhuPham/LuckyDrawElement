@@ -19,13 +19,13 @@ const routes: Array<RouteRecordRaw> = [
     name: 'play',
     component: () => import(/* webpackChunkName: "dashboard" */ '../views/public/MysteryPlayWrapper.vue'),
     redirect: {
-      name: 'redirect',
+      name: 'played_link',
     },
     children: [
       {
-        path: 'redirect',
-        name: 'redirect',
-        component: () => import(/* webpackChunkName: "dashboard" */ '../views/public/MysteryRedirect.vue'),
+        path: 'played/:miracleId',
+        name: 'played_link',
+        component: () => import(/* webpackChunkName: "dashboard" */ '../views/public/MysteryPlayed.vue'),
       },
       {
         path: 'mys-card/:miracleId',

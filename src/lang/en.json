@@ -51,6 +51,7 @@
     "update_miracle": "Updated miracle",
     "save_datasource": "Saved datasource",
     "delete_datasource": "Deleted datasource",
-    "sure": "Sure to {action_name}?"
+    "sure": "Sure to {action_name}?",
+    "great_selected": "Great!!! We notified for manager for your selection"
   }
 }

@@ -1,17 +1,19 @@
 import { errorNotification } from '@/helpers/notification'
 import { IDataSource } from '@/shared/models/datasources'
-import { IMiracle } from '@/shared/models/miracle'
+import { ranDomCardItems } from '@/helpers/utils'
 import store from '@/store'
 import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
 import {
   collection,
   doc,
   Firestore,
+  getDoc,
   onSnapshot,
   orderBy,
   query,
   setDoc,
   updateDoc,
+  where,
   writeBatch,
 } from '@firebase/firestore'
 import dayjs from 'dayjs'
@@ -26,7 +28,7 @@ export default class DatasourcesSerivce {
 
   constructor(db: Firestore, miracleId?: string, userId?: string) {
     this.miracleId = miracleId || ''
-    this.userId = userId || firebaseUser()?.uid || ''
+    this.userId = userId || firebaseUser()?.uid || sessionStorage.getItem('userId') || ''
     this._db = db
 
     if (!this.userId) {
@@ -34,7 +36,7 @@ export default class DatasourcesSerivce {
     }
   }
 
-  onListenDataSourceSingle(oldData: IMiracle, callback: Function) {
+  onListenDataSourceSingle(callback?: Function) {
     const itemsColRef = collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`)
     const queryDB = query(itemsColRef)
 
@@ -42,14 +44,9 @@ export default class DatasourcesSerivce {
       queryDB,
       (snapshot) => {
         snapshot.docChanges().forEach((change) => {
-          if (change.type === 'added') {
-            console.log('New city: ', change.doc.data())
-          }
           if (change.type === 'modified') {
-            console.log('Modified city: ', change.doc.data())
-          }
-          if (change.type === 'removed') {
-            console.log('Removed city: ', change.doc.data())
+            // console.log('Modified resouce: ', change.doc.data())
+            store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, change.doc.data())
           }
         })
       },
@@ -64,11 +61,42 @@ export default class DatasourcesSerivce {
   }
 
   async checkCurrentDataResouce(resourceChooseId: string) {
-    // await
+    store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, true)
+    try {
+      const docRef = doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, resourceChooseId)
+      const docSnap = await getDoc(docRef)
+
+      if (docSnap.exists()) {
+        const resourceData = docSnap.data() as IDataSource
+        return { isPlayed: resourceData.isPlayed, data: docSnap.data() }
+      } else {
+        return false
+      }
+    } catch (error) {
+      errorNotification('Error! Get data-sources mirarcle', '', error as Error)
+    } finally {
+      store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
+    }
   }
 
-  async checkDataResouceSelected(resourceChooseId: string, selectedResouce: IDataSource) {
-    // await
+  async checkDataResouceSelected(selectedResouceid: string) {
+    store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, true)
+    try {
+      const resourceRefs = collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`)
+      const queryDB = query(resourceRefs, where('selected.id', '==', selectedResouceid))
+      const querySnapshot = await getDocs(queryDB)
+      console.log(querySnapshot, selectedResouceid)
+
+      if (querySnapshot.empty) {
+        return true
+      }
+
+      return false
+    } catch (error) {
+      errorNotification('Error! This user has been selected by another people! Select again', '', error as Error)
+    } finally {
+      store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
+    }
   }
 
   async setSelectedDataResource(resourceChooseId: string, selectedResouce: IDataSource) {
@@ -94,7 +122,7 @@ export default class DatasourcesSerivce {
     }
   }
 
-  async loadSingleDataSourceMiracle() {
+  async loadSingleDataSourceMiracle(isRandomItem = false, resourceId = '') {
     store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, true)
     const datas: IDataSource[] = []
 
@@ -108,7 +136,7 @@ export default class DatasourcesSerivce {
           datas.push({ ...docData, id: doc.id })
         })
       }
-      store.commit(MYSTERIES_ACTION.SET_DATASOURCE, datas)
+      store.commit(MYSTERIES_ACTION.SET_DATASOURCE, isRandomItem ? ranDomCardItems(datas, resourceId) : datas)
     } catch (error) {
       errorNotification('Error! Get data-sources mirarcle', '', error as Error)
     }

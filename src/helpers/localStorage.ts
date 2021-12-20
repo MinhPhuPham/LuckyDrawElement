@@ -18,12 +18,12 @@ export const localStorageCustom = {
   clearAll: () => {
     return localStorage.clear()
   },
-  getUser: () => {
+  getIsUserExist: () => {
     try {
       const userRaw = localStorage.getItem(localStorageCustom.makeKey('user')) as string
-      return JSON.parse(userRaw)
+      return !!userRaw
     } catch {
-      return null
+      return false
     }
   },
 }

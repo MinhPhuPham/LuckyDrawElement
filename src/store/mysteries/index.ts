@@ -69,7 +69,7 @@ export default {
     [MYSTERIES_ACTION.UPSERT_DATASOURCE]: (state: TMysteriesState, datasource: IDataSource) => {
       const index = state.datasources.findIndex((data) => data.id === datasource.id)
       if (index >= 0) {
-        state.datasources[index] = datasource
+        state.datasources[index] = { ...state.datasources[index], ...datasource }
       } else {
         state.datasources.unshift(datasource)
       }
@@ -108,10 +108,10 @@ export default {
   actions: {
     [MYSTERIES_ACTION.SET_ITEM]: async (
       { commit, rootState }: { commit: Function; rootState: { auth: TProfileState } },
-      payload: { item: IMiracle; isUpdate: boolean }
+      payload: { item: IMiracle; isUpdate: boolean; userId: string }
     ) => {
       commit(payload.isUpdate ? MYSTERIES_ACTION.UPDATE_ITEM : MYSTERIES_ACTION.SET_ITEM, payload?.item)
-      saveLastChooseMiracle(rootState.auth.user?.uid as string, payload?.item)
+      saveLastChooseMiracle(payload?.userId || (rootState.auth.user?.uid as string), payload?.item)
     },
   },
 }

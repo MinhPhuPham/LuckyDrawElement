@@ -1,5 +1,10 @@
 export const MIRACLE_RESPONSIVE = [
   {
+    screenCards: 7,
+    minWrapWidth: 1201, // maxCardWidth default * 2
+    maxWrapWidth: 1600,
+  },
+  {
     screenCards: 5,
     minWrapWidth: 961, // maxCardWidth default * 2
     maxWrapWidth: 1200,
