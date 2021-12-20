@@ -66,8 +66,7 @@ export default class MysteryWheel extends Vue {
 #wheel {
   position: relative;
   overflow: hidden;
-  width: 100vw;
-  min-height: 200vh;
+  min-height: 80vh;
   background-repeat: no-repeat;
   background-position: center top;
   background-size: 100%;

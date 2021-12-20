@@ -1,5 +1,5 @@
 <template>
-  {{ prizeList }}
+  {{ sizeWheel }}
   <div class="__big-wheel" ref="bigWheel" :style="{ width, height }">
     <div class="wrap" :style="{ transform: rotateAngle, transition: rotateTransition }">
       <canvas id="canvas" ref="canvas">Browser version is too low</canvas>
