@@ -12,14 +12,15 @@ import routerPlugin from './plugins/router'
 import './helpers/firebase'
 import { database, authInit } from './helpers/firebase'
 import { upsertUser } from '@/services/users'
-
+import { localStorageCustom } from './helpers/localStorage'
+const isHaveUser = !!localStorageCustom.getUser()
 const app = createApp(App)
 
 app.config.globalProperties.$message = message
 app.config.globalProperties.$confirm = Modal.confirm
 app.config.globalProperties.$notification = notification
 app.config.globalProperties.$database = database
-app.config.globalProperties.$waitingInitAuth = reactive({ value: false })
+app.config.globalProperties.$waitingInitAuth = reactive({ value: isHaveUser ? false : true })
 
 app.use(i18n).use(router).use(routerPlugin).use(store).use(Button).mount('#app')
 
