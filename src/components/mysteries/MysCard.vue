@@ -2,7 +2,7 @@
   <div class="card-module flex flex-wrap" ref="mysCardRef" v-if="isNotEmptyData">
     <div
       v-for="(item, index) of dataSources"
-      :class="['img-box', { active: item.isShow }]"
+      :class="['img-box', { active: selectedCardValue[`${item.id}${index}`] }]"
       :key="item.id + index"
       :style="{ width: `${cardWidth}px`, height: `${cardHeight}px` }"
       @click="handleClick(index, item)"
@@ -13,11 +13,13 @@
       </div>
       <div class="front">
         <div class="image-top">
-          <a class="title_item">{{ selectedCardValue[item.id]?.name || $t('label.mystery_card') }}</a>
+          <a class="title_item">{{ selectedCardValue[`${item.id}${index}`]?.name || $t('label.mystery_card') }}</a>
           <img class="img-item" :src="item.cardFront || require('@/assets/images/mys-cards/card-front.png')" />
         </div>
         <div class="content">
-          <a class="subtitle_item">{{ selectedCardValue[item.id]?.subtitle || $t('label.mystery_card') }}</a>
+          <a class="subtitle_item">
+            {{ selectedCardValue[`${item.id}${index}`]?.subtitle || $t('label.mystery_card') }}
+          </a>
         </div>
       </div>
     </div>
@@ -87,6 +89,7 @@ export default class MysCardComponent extends Vue {
   }
 
   async productAction(index: number, itemSelected: ICardDataSource) {
+    // console.log(index, itemSelected)
     const datasourceService = new DatasourcesSerivce(this.$database, this.selectedMiracle.id)
     const response = await datasourceService.checkDataResouceSelected(itemSelected.id)
     const resourceChooseId = sessionStorage.getItem('resourceChooseId') as string
@@ -100,12 +103,11 @@ export default class MysCardComponent extends Vue {
       (await datasourceService.setSelectedDataResource(resourceChooseId, itemSelected).then(() => {
         this.successChoosen(index, itemSelected)
         successNotification(`${this.$t('message.success')} ${this.$t('message.great_selected')}`)
-        this.$store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, { id: resourceChooseId, isPlayed: true })
       }))
   }
 
   successChoosen(index: number, itemSelected: ICardDataSource) {
-    this.selectedCardValue[itemSelected.id] = itemSelected
+    this.selectedCardValue[`${itemSelected.id}${index}`] = itemSelected
     this.$store.commit(MIRACEL_CARD_ACTION.SET_SELECT_CARD, index)
     this.celebrate()
   }
@@ -158,6 +160,7 @@ export default class MysCardComponent extends Vue {
 
   created() {
     window.addEventListener('resize', this.handleResizeChange)
+    // console.log(this.dataSources)
   }
 
   beforeUnmount() {

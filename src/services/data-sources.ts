@@ -97,7 +97,6 @@ export default class DatasourcesSerivce {
       const resourceRefs = collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`)
       const queryDB = query(resourceRefs, where('selected.id', '==', selectedResouceid))
       const querySnapshot = await getDocs(queryDB)
-      console.log(querySnapshot, selectedResouceid)
 
       if (querySnapshot.empty) {
         return true

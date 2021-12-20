@@ -33,9 +33,14 @@ export function randomItems(datasouces: IDataSource[]) {
 }
 
 export function ranDomCardItems(datasources: ICardDataSource[], currentResouceId: string) {
-  let cardsNotSelectedYet = datasources.filter(
-    (card) => !card.isPlayed || !!card.selected || card.id !== currentResouceId
-  )
+  let cardsNotSelectedYet = datasources.filter((card) => {
+    if (card.id === currentResouceId) {
+      return false
+    }
+
+    return !card.isPlayed
+  })
+  // console.log(cardsNotSelectedYet, )
 
   if (!cardsNotSelectedYet.length) {
     return []
