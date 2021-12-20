@@ -1,8 +1,8 @@
-import { saveLastChooseMiracle } from '@/helpers/utils'
+import { randomItems, saveLastChooseMiracle } from '@/helpers/utils'
 import { IDataSource } from '@/shared/models/datasources'
 import { IMiracle } from '@/shared/models/miracle'
 import { TProfileState } from '../auth'
-import { MYSTERIES_ACTION } from './actions'
+import { MIRACEL_CARD_ACTION, MYSTERIES_ACTION } from './actions'
 
 type TMysteriesState = {
   items: IMiracle[]
@@ -32,6 +32,34 @@ export default {
     datasources: (state: TMysteriesState) => {
       return state.datasources
     },
+    cardDatasourcesRandom: (state: TMysteriesState) => (currentResouceId: string) => {
+      let cardsNotSelectedYet = state.datasources.filter(
+        (card) => !card.isPlayed || !!card.selected || card.id !== currentResouceId
+      )
+
+      if (!cardsNotSelectedYet.length) {
+        return []
+      }
+
+      const datasourcesLength = state.datasources.length
+      const ratioCompensate = Math.ceil(datasourcesLength / cardsNotSelectedYet.length) - 1
+
+      for (let index = 0; index < ratioCompensate; index++) {
+        // Get length data need to Compensate
+        const lengthCompensate = datasourcesLength - cardsNotSelectedYet.length
+
+        const sliced = cardsNotSelectedYet.slice(0, lengthCompensate + 1)
+        cardsNotSelectedYet = cardsNotSelectedYet.concat(sliced)
+      }
+
+      return randomItems(cardsNotSelectedYet)
+    },
+    selectedDatasource: (state: TMysteriesState) => {
+      return state.datasources.find((item) => item.isPlayed)
+    },
+    // selectedTextBinding: (state: TMysteriesState) => (cardId: string) => {
+    //   return state.datasources.find((item) => item.isPlayed && item.id === cardId)
+    // },
     miracleLoading: (state: TMysteriesState) => {
       return state.miracleLoading
     },
@@ -71,6 +99,16 @@ export default {
     [MYSTERIES_ACTION.SET_DATASOURCE]: (state: TMysteriesState, datasources: IDataSource[]) => {
       state.datasources = datasources
     },
+    [MYSTERIES_ACTION.SET_MULTI_DATASOURCE]: (state: TMysteriesState, datasources: IDataSource[]) => {
+      datasources.forEach((item) => {
+        const oldIndex = state.datasources.findIndex((old) => old.id === item.id)
+        if (oldIndex >= 0) {
+          state.datasources[oldIndex] = item
+        } else {
+          state.datasources.unshift(item)
+        }
+      })
+    },
     [MYSTERIES_ACTION.DELETE_DATASOURCE]: (state: TMysteriesState, datasourceId: string) => {
       state.datasources = state.datasources.filter((item) => item.id !== datasourceId)
     },
@@ -79,6 +117,14 @@ export default {
     },
     [MYSTERIES_ACTION.SET_DATASOURCE_LOADING]: (state: TMysteriesState, loading: boolean) => {
       state.dataSourceLoading = loading
+    },
+    // Card
+    [MIRACEL_CARD_ACTION.SET_SELECT_CARD]: (state: TMysteriesState, index: number) => {
+      state.datasources[index].isShow = true
+    },
+    [MIRACEL_CARD_ACTION.RE_RANDOM_ITEM]: (state: TMysteriesState) => {
+      // Press the array to the subscript
+      state.datasources = randomItems(state.datasources)
     },
   },
   actions: {

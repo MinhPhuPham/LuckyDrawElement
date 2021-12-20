@@ -3,9 +3,19 @@ import { IDataSource } from '@/shared/models/datasources'
 import { IMiracle } from '@/shared/models/miracle'
 import store from '@/store'
 import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
-import { collection, doc, Firestore, getDoc, onSnapshot, setDoc, writeBatch } from '@firebase/firestore'
+import {
+  collection,
+  doc,
+  Firestore,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+  updateDoc,
+  writeBatch,
+} from '@firebase/firestore'
 import dayjs from 'dayjs'
-import { addDoc, deleteDoc, getDocs } from 'firebase/firestore'
+import { deleteDoc, getDocs } from 'firebase/firestore'
 import { firebaseUser } from './users'
 
 export default class DatasourcesSerivce {
@@ -25,11 +35,23 @@ export default class DatasourcesSerivce {
   }
 
   onListenDataSourceSingle(oldData: IMiracle, callback: Function) {
+    const itemsColRef = collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`)
+    const queryDB = query(itemsColRef)
+
     this.unsubscribeSnapshot = onSnapshot(
-      doc(this._db, `mysteries/${this.userId}/data_sources`, this.miracleId),
-      (documentData) => {
-        console.log('Current data: ', documentData.data())
-        callback(oldData, documentData.data())
+      queryDB,
+      (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            console.log('New city: ', change.doc.data())
+          }
+          if (change.type === 'modified') {
+            console.log('Modified city: ', change.doc.data())
+          }
+          if (change.type === 'removed') {
+            console.log('Removed city: ', change.doc.data())
+          }
+        })
       },
       (error) => {
         errorNotification('Error! Listen realtime event', '', error as Error)
@@ -41,18 +63,51 @@ export default class DatasourcesSerivce {
     this.unsubscribeSnapshot()
   }
 
+  async checkCurrentDataResouce(resourceChooseId: string) {
+    // await
+  }
+
+  async checkDataResouceSelected(resourceChooseId: string, selectedResouce: IDataSource) {
+    // await
+  }
+
+  async setSelectedDataResource(resourceChooseId: string, selectedResouce: IDataSource) {
+    store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, true)
+
+    try {
+      return await updateDoc(
+        doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, resourceChooseId),
+        {
+          createdAt: dayjs().unix(),
+          selected: {
+            id: selectedResouce.id,
+            name: selectedResouce.name,
+            dateSelected: dayjs().unix(),
+          },
+          isPlayed: true,
+        }
+      )
+    } catch (error) {
+      errorNotification('Error! Can\t update into DB', '', error as Error)
+    } finally {
+      store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
+    }
+  }
+
   async loadSingleDataSourceMiracle() {
     store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, true)
     const datas: IDataSource[] = []
 
     try {
-      const querySnapshot = await getDocs(
-        collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`)
-      )
-      querySnapshot.forEach((doc) => {
-        const docData = doc.data() as IDataSource
-        datas.push({ ...docData, id: doc.id })
-      })
+      const itemsRef = collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`)
+      const queryDB = query(itemsRef, orderBy('createdAt', 'desc'))
+      const querySnapshot = await getDocs(queryDB)
+      if (!querySnapshot.empty) {
+        querySnapshot.docs.forEach((doc) => {
+          const docData = doc.data() as IDataSource
+          datas.push({ ...docData, id: doc.id })
+        })
+      }
       store.commit(MYSTERIES_ACTION.SET_DATASOURCE, datas)
     } catch (error) {
       errorNotification('Error! Get data-sources mirarcle', '', error as Error)
@@ -63,43 +118,49 @@ export default class DatasourcesSerivce {
   }
 
   async upsertDataSource(datasource: IDataSource) {
+    store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, true)
+
     try {
       await setDoc(doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, datasource.id), {
         ...datasource,
+        createdAt: dayjs().unix(),
       })
       store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, datasource)
-      return true
     } catch (error) {
       errorNotification('Error! Upsert datasource failed', '', error as Error)
-      return false
+    } finally {
+      store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
     }
   }
 
   async deleteDataSource(datasourceId: string) {
+    store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, true)
+
     try {
       await deleteDoc(doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, datasourceId))
       store.commit(MYSTERIES_ACTION.DELETE_DATASOURCE, datasourceId)
-      return true
     } catch (error) {
       errorNotification('Error! Can\t delete miracle', '', error as Error)
-      return false
+    } finally {
+      store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
     }
   }
 
   async addMultipleDatasource(datasources: IDataSource[]) {
+    store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, true)
     try {
       const batch = writeBatch(this._db)
       datasources.forEach((data) => {
-        //doc(collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`))
         const docRef = doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, data.id as string)
-        batch.set(docRef, data)
+        batch.set(docRef, { ...data, createdAt: dayjs().unix() })
       })
 
-      const response = await batch.commit()
-      console.log(response)
+      await batch.commit()
     } catch (error) {
       errorNotification('Error! Get data-sources mirarcle', '', error as Error)
-      return false
+    } finally {
+      store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
+      return
     }
   }
 }

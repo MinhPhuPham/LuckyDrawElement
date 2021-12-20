@@ -14,7 +14,7 @@
               <a-menu @click="handleMenuClick($event, item)">
                 <a-menu-item key="1">
                   <EditTwoTone />
-                  <span class="ml-1">Edit</span>
+                  <span class="ml-1">Transfer(copy) Data</span>
                 </a-menu-item>
                 <a-menu-item key="2">
                   <DeleteTwoTone two-tone-color="#eb2f96" />
@@ -92,7 +92,7 @@ export default class MiracleItems extends Vue {
   handleMenuClick(menuObject: MenuInfo, item: IMiracle) {
     switch (parseInt(menuObject.key as string)) {
       case 1:
-        // this.$goto('dashboard')
+        this.$emit('onSelectTransfer', item)
         break
 
       case 2:

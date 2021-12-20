@@ -43,7 +43,7 @@ import { Vue, Options } from 'vue-class-component'
 import { DeleteOutlined, PlayCircleOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { Tabs, TabPane } from 'ant-design-vue'
 import asyncTab from '@/components/asyncCompoents/AsyncTab'
-import { shallowRef } from '@vue/reactivity'
+import { markRaw, shallowRef } from '@vue/reactivity'
 @Options({
   components: {
     [Tabs.name]: Tabs,
@@ -70,11 +70,15 @@ export default class ConfigureMiracle extends Vue {
   activeKey = 1
 
   addPreviewTab() {
+    if (this.panes.length >= 2) {
+      return
+    }
+
     this.panes.push({
       title: 'Preview',
-      content: shallowRef(asyncTab.PreviewMiracle),
+      content: markRaw(asyncTab.PreviewMiracle),
       key: 2,
-      icon: shallowRef(PlayCircleOutlined),
+      icon: PlayCircleOutlined,
       closable: true,
     })
     this.activeKey = 2
@@ -82,7 +86,7 @@ export default class ConfigureMiracle extends Vue {
 
   removePreview() {
     this.activeKey = 1
-    this.panes.pop()
+    this.panes.length = 1
   }
 }
 </script>

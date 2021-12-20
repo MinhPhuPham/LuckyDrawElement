@@ -1,11 +1,12 @@
 <template>
   <div class="flex justify-between mt-1">
-    <a-button danger type="primary" @click="handleClear">
+    <!-- <a-button danger type="primary" @click="handleClear">
       <template #icon>
         <DeleteOutlined />
       </template>
       <span class="text-medium">Delete</span>
-    </a-button>
+    </a-button> -->
+    <span></span>
 
     <div>
       <a-button class="mr-1" @click="addDefault">
@@ -39,6 +40,7 @@
           v-model:value="editableData[record.id][column.dataIndex]"
           style="margin: -5px 0"
           :ref="`nameInput${column.dataIndex}${record.id}`"
+          @pressEnter="onEnter(column.dataIndex)"
         />
         <template v-else>
           {{ text }}
@@ -73,7 +75,7 @@
           </a-popconfirm>
         </span>
         <span v-else>
-          <a-button @click="edit(record.id)">
+          <a-button class="action-max mb-haft" block @click="edit(record.id)">
             <template #icon>
               <EditOutlined />
             </template>
@@ -81,7 +83,7 @@
           </a-button>
 
           <a-popconfirm title="Sure to delete?" @confirm="onDelete(record.id)">
-            <a-button>
+            <a-button class="action-max" block>
               <template #icon>
                 <DeleteOutlined />
               </template>
@@ -103,7 +105,6 @@
 
 <script lang="ts">
 import { Vue, Options } from 'vue-class-component'
-import cloneDeep from 'lodash/cloneDeep'
 import uniqid from 'uniqid'
 import {
   PlusOutlined,
@@ -193,11 +194,19 @@ export default class DataSourceTable extends Vue {
   // eslint-disable-next-line
   qrCodeViewer: any = {}
 
+  onEnter(indexKey: string) {
+    this.addDefault()
+  }
+
   edit(id: string) {
-    this.editableData[id] = cloneDeep(this.dataSources.find((item) => id === item.id))
+    this.editableData[id] = JSON.parse(JSON.stringify(this.dataSources.find((item) => id === item.id)))
   }
 
   onSave(id: string) {
+    if (this.isEmptyRequired(id)) {
+      return
+    }
+
     new DatasourcesSerivce(this.$database, this.selectedMiracle.id)
       .upsertDataSource(this.editableData[id])
       .then((res) => {
@@ -250,8 +259,8 @@ export default class DataSourceTable extends Vue {
     }
   }
 
-  isEmptyRequired() {
-    return this.editableData[this.previousKey] && !this.editableData[this.previousKey]?.name
+  isEmptyRequired(key?: string) {
+    return this.editableData[key || this.previousKey] && !this.editableData[key || this.previousKey]?.name
   }
 
   renderLinkShare(resourceId: string) {
@@ -269,9 +278,17 @@ export default class DataSourceTable extends Vue {
     return location.origin + path
   }
 
-  async saveAllEdit() {
-    if (Object.values(this.editableData).length) {
-      // await new
+  saveAllEdit() {
+    const datasourcesKeepEdit = Object.values(this.editableData) as IDataSource[]
+
+    if (datasourcesKeepEdit.length) {
+      new DatasourcesSerivce(this.$database, this.selectedMiracle.id)
+        .addMultipleDatasource(datasourcesKeepEdit)
+        .then(() => {
+          successNotification(`${this.$t('message.success')} ${this.$t('message.save_datasource')}`)
+          this.$store.commit(MYSTERIES_ACTION.SET_MULTI_DATASOURCE, datasourcesKeepEdit)
+          this.editableData = {}
+        })
     }
   }
 
@@ -284,44 +301,7 @@ export default class DataSourceTable extends Vue {
 </script>
 
 <style lang="scss" scoped>
-// .editable-cell {
-//   position: relative;
-//   .editable-cell-input-wrapper,
-//   .editable-cell-text-wrapper {
-//     padding-right: 24px;
-//   }
-
-//   .editable-cell-text-wrapper {
-//     padding: 5px 24px 5px 5px;
-//   }
-
-//   .editable-cell-icon,
-//   .editable-cell-icon-check {
-//     position: absolute;
-//     right: 0;
-//     width: 20px;
-//     cursor: pointer;
-//   }
-
-//   .editable-cell-icon {
-//     margin-top: 4px;
-//     display: none;
-//   }
-
-//   .editable-cell-icon-check {
-//     line-height: 28px;
-//   }
-
-//   .editable-cell-icon:hover,
-//   .editable-cell-icon-check:hover {
-//     color: #108ee9;
-//   }
-
-//   .editable-add-btn {
-//     margin-bottom: 8px;
-//   }
-// }
-// .editable-cell:hover .editable-cell-icon {
-//   display: inline-block;
-// }
+.action-max {
+  max-width: 120px;
+}
 </style>

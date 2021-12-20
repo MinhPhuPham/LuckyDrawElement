@@ -21,5 +21,4 @@ declare module '*.vue' {
   export default Vue
 }
 
-declare module 'lodash'
 declare module 'uniqid'

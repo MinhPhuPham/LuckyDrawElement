@@ -21,7 +21,9 @@
   "label": {
     "title": "Title",
     "description": "Description",
-    "copy_link": "Click to copy"
+    "copy_link": "Click to copy",
+    "no_num": "No.",
+    "mystery_card": "Mystery Card! Let Open It"
   },
   "action": {
     "submit": "Submit",

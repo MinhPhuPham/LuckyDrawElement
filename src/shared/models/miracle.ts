@@ -9,6 +9,8 @@ export interface IBaseMiracle {
 export interface IMiracleCard extends IBaseMiracle {
   cardBgOverlay?: string
   cardBgBorder?: string
+
+  multiplePicker?: boolean
 }
 
 export interface IMiracleWheel extends IBaseMiracle {

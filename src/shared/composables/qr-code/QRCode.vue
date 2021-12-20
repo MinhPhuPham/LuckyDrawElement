@@ -34,7 +34,7 @@ type levelQR = 'L' | 'M' | 'Q' | 'H'
 export default class QRCode extends Vue {
   @Prop({ default: '', type: String }) url!: string
   @Prop({ required: true, type: String }) keyValue!: string
-  @Prop({ default: 100, type: Number }) size!: number
+  @Prop({ default: 120, type: Number }) size!: number
   @Prop({ default: 'H', type: String }) level!: levelQR
 
   isCopied = false

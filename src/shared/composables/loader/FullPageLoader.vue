@@ -22,9 +22,9 @@ export default class FullPageLoader extends Vue {
 </script>
 
 <style lang="scss" scoped>
-$offset: -0.8rem;
-$count: 15;
-$duration: 0.45;
+$offset: -0.6rem;
+$count: 25;
+$duration: 0.48;
 
 @keyframes wave {
   from {

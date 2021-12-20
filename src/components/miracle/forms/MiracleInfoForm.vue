@@ -27,7 +27,6 @@
 <script lang="ts">
 import { Vue, Options } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
-import cloneDeep from 'lodash/cloneDeep'
 import { IMiracle } from '@/shared/models/miracle'
 
 import { FormItem, Form, Input, Textarea } from 'ant-design-vue'
@@ -67,7 +66,7 @@ export default class MiraInfoForm extends Vue {
   @Watch('miracleFormData', { deep: true, immediate: true })
   onFormDataChange() {
     if (this.miracleFormData) {
-      this.miracleForm = { ...this.miracleForm, ...cloneDeep(this.miracleFormData) }
+      this.miracleForm = { ...this.miracleForm, ...JSON.parse(JSON.stringify(this.miracleFormData)) }
     }
   }
 

@@ -24,7 +24,7 @@
 
       <template v-else>
         <template v-if="selectedMiracle && miracles.length">
-          <ms-config-miracle @onDeleteItem="confirmDeleteMiracle" />
+          <ms-config-miracle :key="componentCount" @onDeleteItem="confirmDeleteMiracle" />
         </template>
         <template v-else-if="!selectedMiracle && miracles.length">
           <a-result title="Not selected yet" sub-title="Please select a miracle for the next action">
@@ -85,6 +85,7 @@ import { successNotification } from '@/helpers/notification'
 })
 export default class DashBoard extends Vue {
   modalVisiable = false
+  componentCount = 0
 
   get miracles() {
     return this.$store.getters.miracles
@@ -104,6 +105,7 @@ export default class DashBoard extends Vue {
   }
 
   async selectMiracle(item: IMiracle) {
+    this.componentCount++
     this.$store.dispatch(MYSTERIES_ACTION.SET_ITEM, { item })
 
     // Get datasource info

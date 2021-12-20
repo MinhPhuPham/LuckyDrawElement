@@ -1,10 +1,12 @@
 <template>
+  {{ prizeList }}
   <div class="__big-wheel" ref="bigWheel" :style="{ width, height }">
     <div class="wrap" :style="{ transform: rotateAngle, transition: rotateTransition }">
       <canvas id="canvas" ref="canvas">Browser version is too low</canvas>
       <div class="prize-wrap">
         <div class="item" v-for="(item, index) in prizeList" :key="index" :style="_calcRotateAngle(index)">
           <slot name="item" :item="item" />
+          {{ item }}
         </div>
       </div>
     </div>
@@ -12,6 +14,7 @@
 </template>
 
 <script lang="ts">
+import { IWheelDataSource } from '@/shared/models/datasources'
 import { Vue, Options } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 
@@ -19,7 +22,7 @@ import { Prop } from 'vue-property-decorator'
   components: {},
   name: 'wheel',
 })
-export default class Wheel<T> extends Vue {
+export default class Wheel extends Vue {
   // Start the angle of rotation
   startRotateDegree = 0
 
@@ -28,7 +31,7 @@ export default class Wheel<T> extends Vue {
 
   rotateTransition = ''
 
-  @Prop({ required: true, type: Array }) prizeList!: Array<T>
+  @Prop({ required: true, type: Array }) prizeList!: Array<IWheelDataSource>
   @Prop({ required: true, type: String }) width!: string
   @Prop({ required: true, type: String }) height!: string
 

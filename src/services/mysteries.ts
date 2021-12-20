@@ -108,7 +108,7 @@ export default class MysteriesSerivce {
       if (!querySnapshot.empty) {
         querySnapshot.docs.forEach((doc) => {
           const docData = doc.data() as IMiracle
-          datas.push({ id: doc.id, ...docData })
+          datas.push({ ...docData, id: doc.id })
         })
       }
 

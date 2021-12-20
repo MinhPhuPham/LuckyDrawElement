@@ -15,6 +15,7 @@ export interface IBaseDataSource {
 
 export interface ICardDataSource extends IBaseDataSource {
   fontBg?: string // Custom front-of background selected
+  isShow?: boolean
 }
 
 export interface ICloudDataSource extends IBaseDataSource {}

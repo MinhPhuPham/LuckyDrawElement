@@ -11,10 +11,9 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component'
 import { BackTop } from 'ant-design-vue'
-import { Watch } from 'vue-property-decorator'
 import FullPageLoader from '@/shared/composables/loader/FullPageLoader.vue'
 
-Vue.registerHooks(['beforeRouteEnter'])
+Vue.registerHooks(['beforeRouteEnter', 'beforeDestroy'])
 
 @Options({
   components: {
