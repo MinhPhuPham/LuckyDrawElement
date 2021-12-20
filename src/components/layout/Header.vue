@@ -89,6 +89,7 @@ export default class Home extends Vue {
     signOut(auth).then(() => {
       this.$goto('home')
       localStorageCustom.clearAll()
+      sessionStorage.clear()
     })
   }
 }
