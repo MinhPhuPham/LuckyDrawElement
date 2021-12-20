@@ -9,6 +9,12 @@
     <span></span>
 
     <div v-if="!isViewMode">
+      <a-button class="mr-1" type="dashed" @click="goToResult">
+        <template #icon>
+          <EyeOutlined />
+        </template>
+        <span class="text-medium">View Realtime</span>
+      </a-button>
       <a-button class="mr-1" @click="addDefault">
         <template #icon>
           <PlusOutlined />
@@ -127,6 +133,7 @@ import {
   EditOutlined,
   AppstoreTwoTone,
   SettingOutlined,
+  EyeOutlined,
 } from '@ant-design/icons-vue'
 import { Table } from 'ant-design-vue'
 
@@ -162,6 +169,7 @@ import { Prop } from 'vue-property-decorator'
     EditOutlined,
     AppstoreTwoTone,
     SettingOutlined,
+    EyeOutlined,
   },
   name: 'ms-datasource',
 })
@@ -246,6 +254,11 @@ export default class DataSourceTable extends Vue {
 
   onSelectChange() {}
 
+  goToResult() {
+    const firstItemId = this.dataSources[0]?.id
+    firstItemId && this.$router.push(this.parseParams(firstItemId))
+  }
+
   addDefault() {
     if (this.isEmptyRequired()) {
       return
@@ -281,7 +294,12 @@ export default class DataSourceTable extends Vue {
   }
 
   renderLinkShare(resourceId: string) {
-    const path = this.$router.resolve({
+    const path = this.$router.resolve(this.parseParams(resourceId))?.fullPath
+    return location.origin + path
+  }
+
+  parseParams(resourceId: string) {
+    return {
       name: this.routerName[this.selectedMiracle.type as MiracleType],
       params: {
         userId: this.userId,
@@ -290,9 +308,7 @@ export default class DataSourceTable extends Vue {
       query: {
         resourceId: resourceId,
       },
-    })?.fullPath
-
-    return location.origin + path
+    }
   }
 
   saveAllEdit() {
