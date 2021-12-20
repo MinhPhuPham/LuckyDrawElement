@@ -1,7 +1,7 @@
 export interface ISelectedDataSource {
   id?: string
   name: string
-  dateSelected: string
+  dateSelected: number | string
 }
 
 export interface IBaseDataSource {

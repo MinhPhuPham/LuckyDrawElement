@@ -1,8 +1,8 @@
+import { nowToUnixTime } from '@/helpers/date'
 import { localStorageCustom } from '@/helpers/localStorage'
 import { IUserFull, UserModel } from '@/shared/models/user'
 import { getAuth, onAuthStateChanged, User } from '@firebase/auth'
 import { Firestore, setDoc } from '@firebase/firestore'
-import dayjs from 'dayjs'
 import { doc } from 'firebase/firestore'
 
 const auth = getAuth()
@@ -32,7 +32,7 @@ export const upsertUser = async (db: Firestore, user: IUserFull | User) => {
   try {
     await setDoc(doc(db, 'users', user.uid), {
       ...new UserModel(user as IUserFull).parseWithoutTokenModel(),
-      lastLoginAt: dayjs().unix(),
+      lastLoginAt: nowToUnixTime(),
     })
     localStorageCustom.setItem('user', JSON.stringify(new UserModel(user as IUserFull).parseModel()))
 

@@ -1,11 +1,11 @@
 import { errorNotification } from '@/helpers/notification'
 import { IMiracle } from '@/shared/models/miracle'
 import { collection, deleteDoc, doc, Firestore, getDoc, orderBy, query, setDoc, updateDoc } from '@firebase/firestore'
-import dayjs from 'dayjs'
 import store from '@/store/index'
 import { addDoc, getDocs } from 'firebase/firestore'
 import { firebaseUser } from './users'
 import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
+import { nowToUnixTime } from '@/helpers/date'
 
 export default class MysteriesSerivce {
   private miracleId: string = ''
@@ -27,8 +27,8 @@ export default class MysteriesSerivce {
       const docRef = await addDoc(collection(this._db, `mysteries/${this.userId}/infomations`), {
         ...miracleData,
         creatorId: this.userId,
-        createdAt: dayjs().unix(),
-        updatedAt: dayjs().unix(),
+        createdAt: nowToUnixTime(),
+        updatedAt: nowToUnixTime(),
       })
 
       const miracle = { ...miracleData, id: docRef.id }
@@ -45,7 +45,7 @@ export default class MysteriesSerivce {
     try {
       await setDoc(doc(this._db, `mysteries/${this.userId}/infomations`, this.miracleId), {
         ...miracleData,
-        updatedAt: dayjs().unix(),
+        updatedAt: nowToUnixTime(),
       })
 
       store.dispatch(MYSTERIES_ACTION.SET_ITEM, { item: miracleData, isUpdate: true })
@@ -59,7 +59,7 @@ export default class MysteriesSerivce {
   async setRecentlyAccess() {
     try {
       return await updateDoc(doc(this._db, `mysteries/${this.userId}/infomations`, this.miracleId), {
-        updatedAt: dayjs().unix(),
+        updatedAt: nowToUnixTime(),
       })
     } catch (error) {
       console.log('Error! Set recently into DB', error)

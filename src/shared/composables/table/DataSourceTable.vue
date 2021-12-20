@@ -57,10 +57,16 @@
         <CloseSquareTwoTone :style="{ fontSize: '20px' }" two-tone-color="#eb2f96" v-else />
       </template>
       <template v-else-if="column.key === 'selected'">
-        <a-tag color="geekblue" v-if="record.selected">
-          {{ record.selected.name }} <br />
-          {{ record.selected.dateSelected }}
-        </a-tag>
+        <template v-if="record.selected">
+          <a-tag color="geekblue" style="margin-bottom: 6px">
+            {{ record.selected.name }}
+          </a-tag>
+          <br />
+          <a-tag color="orange">
+            {{ record.selected.dateSelected }}
+          </a-tag>
+        </template>
+
         <span v-else>-</span>
       </template>
       <template v-else-if="column.key === 'link'">

@@ -72,6 +72,12 @@ export default class MysterCardPlayScreen extends Vue {
       this.listenCollectionChange(miracleId as string, userId as string)
     }
   }
+
+  beforeUnmount() {
+    if (this.isAuth) {
+      this.dataSourceSerivce.offListenDataSource()
+    }
+  }
 }
 </script>
 

@@ -15,7 +15,7 @@ import { Result } from 'ant-design-vue'
 import Header from '@/components/layout/Header.vue'
 import Footer from '@/components/layout/Footer.vue'
 import { IDataSource } from '@/shared/models/datasources'
-import dayjs from 'dayjs'
+import { convertUnixToDatetime } from '@/helpers/date'
 @Options({
   components: {
     [Result.name]: Result,
@@ -31,9 +31,7 @@ export default class PlayWrapper extends Vue {
       const result = sessionStorage.getItem(miracleId as string)
       if (result) {
         const parser = JSON.parse(result) as IDataSource
-        this.content = `Selected: ${parser.name} - at ${dayjs(parser.selected?.dateSelected).format(
-          'YYYY/MM/DD HH:mm:ss'
-        )}`
+        this.content = `Selected: ${parser.name} - at ${convertUnixToDatetime(parser.selected?.dateSelected as number)}`
       }
     }
   }

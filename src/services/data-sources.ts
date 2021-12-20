@@ -16,9 +16,9 @@ import {
   where,
   writeBatch,
 } from '@firebase/firestore'
-import dayjs from 'dayjs'
 import { deleteDoc, getDocs } from 'firebase/firestore'
 import { firebaseUser } from './users'
+import { convertUnixToDatetime, nowToUnixTime } from '@/helpers/date'
 
 export default class DatasourcesSerivce {
   private miracleId: string = ''
@@ -106,11 +106,11 @@ export default class DatasourcesSerivce {
       return await updateDoc(
         doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, resourceChooseId),
         {
-          createdAt: dayjs().unix(),
+          createdAt: nowToUnixTime(),
           selected: {
             id: selectedResouce.id,
             name: selectedResouce.name,
-            dateSelected: dayjs().unix(),
+            dateSelected: nowToUnixTime(),
           },
           isPlayed: true,
         }
@@ -133,6 +133,9 @@ export default class DatasourcesSerivce {
       if (!querySnapshot.empty) {
         querySnapshot.docs.forEach((doc) => {
           const docData = doc.data() as IDataSource
+          if (docData.selected) {
+            docData.selected.dateSelected = convertUnixToDatetime(docData.selected.dateSelected as number)
+          }
           datas.push({ ...docData, id: doc.id })
         })
       }
@@ -151,7 +154,7 @@ export default class DatasourcesSerivce {
     try {
       await setDoc(doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, datasource.id), {
         ...datasource,
-        createdAt: dayjs().unix(),
+        createdAt: nowToUnixTime(),
       })
       store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, datasource)
     } catch (error) {
@@ -180,7 +183,7 @@ export default class DatasourcesSerivce {
       const batch = writeBatch(this._db)
       datasources.forEach((data) => {
         const docRef = doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, data.id as string)
-        batch.set(docRef, { ...data, createdAt: dayjs().unix() })
+        batch.set(docRef, { ...data, createdAt: nowToUnixTime() })
       })
 
       await batch.commit()

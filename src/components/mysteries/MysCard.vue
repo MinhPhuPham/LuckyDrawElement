@@ -13,11 +13,11 @@
       </div>
       <div class="front">
         <div class="image-top">
-          <a class="title_item">{{ $t('label.mystery_card') }}</a>
+          <a class="title_item">{{ selectedCardValue[item.id]?.name || $t('label.mystery_card') }}</a>
           <img class="img-item" :src="item.cardFront || require('@/assets/images/mys-cards/card-front.png')" />
         </div>
         <div class="content">
-          <a class="subtitle_item">{{ $t('label.mystery_card') }}</a>
+          <a class="subtitle_item">{{ selectedCardValue[item.id]?.subtitle || $t('label.mystery_card') }}</a>
         </div>
       </div>
     </div>
@@ -60,6 +60,9 @@ export default class MysCardComponent extends Vue {
 
   timer: number | null = null
 
+  // eslint-disable-next-line
+  selectedCardValue: any = {}
+
   get selectedCard(): ICardDataSource {
     return this.$store.getters.selectedDatasource
   }
@@ -81,10 +84,10 @@ export default class MysCardComponent extends Vue {
   }
 
   async handleClick(index: number, itemSelected: ICardDataSource) {
-    if (this.selectedCard) {
+    if (this.selectedCard && !this.isPreview) {
       return errorNotification('Opps! Seems you selected. Manager setting can only be selected once')
     }
-    this.isPreview ? this.successChoosen(index) : this.productAction(index, itemSelected)
+    this.isPreview ? this.successChoosen(index, itemSelected) : this.productAction(index, itemSelected)
   }
 
   async productAction(index: number, itemSelected: ICardDataSource) {
@@ -99,23 +102,16 @@ export default class MysCardComponent extends Vue {
     }
     resourceChooseId &&
       (await datasourceService.setSelectedDataResource(resourceChooseId, itemSelected).then(() => {
-        this.successChoosen(index)
+        this.successChoosen(index, itemSelected)
         successNotification(`${this.$t('message.success')} ${this.$t('message.great_selected')}`)
         this.$store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, { id: resourceChooseId, isPlayed: true })
       }))
   }
 
-  successChoosen(index: number) {
+  successChoosen(index: number, itemSelected: ICardDataSource) {
+    this.selectedCardValue[itemSelected.id] = itemSelected
     this.$store.commit(MIRACEL_CARD_ACTION.SET_SELECT_CARD, index)
     this.celebrate()
-  }
-
-  getTextCard(cardId: string, isTitle = true) {
-    if (this.selectedCard?.id === cardId) {
-      return isTitle ? this.selectedCard.name : this.selectedCard.subtitle
-    }
-
-    return this.$t('label.mystery_card')
   }
 
   celebrate() {
@@ -126,7 +122,7 @@ export default class MysCardComponent extends Vue {
           particleCount: 4,
           angle: 90,
           spread: 55,
-          origin: { x: 1, y: 1 },
+          origin: { x: 0, y: 1 },
         })
       }, 500)
     }
