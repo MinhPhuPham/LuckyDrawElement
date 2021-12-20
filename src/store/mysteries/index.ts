@@ -32,28 +32,6 @@ export default {
     datasources: (state: TMysteriesState) => {
       return state.datasources
     },
-    cardDatasourcesRandom: (state: TMysteriesState) => (currentResouceId: string) => {
-      let cardsNotSelectedYet = state.datasources.filter(
-        (card) => !card.isPlayed || !!card.selected || card.id !== currentResouceId
-      )
-
-      if (!cardsNotSelectedYet.length) {
-        return []
-      }
-
-      const datasourcesLength = state.datasources.length
-      const ratioCompensate = Math.ceil(datasourcesLength / cardsNotSelectedYet.length) - 1
-
-      for (let index = 0; index < ratioCompensate; index++) {
-        // Get length data need to Compensate
-        const lengthCompensate = datasourcesLength - cardsNotSelectedYet.length
-
-        const sliced = cardsNotSelectedYet.slice(0, lengthCompensate + 1)
-        cardsNotSelectedYet = cardsNotSelectedYet.concat(sliced)
-      }
-
-      return randomItems(cardsNotSelectedYet)
-    },
     selectedDatasource: (state: TMysteriesState) => {
       return state.datasources.find((item) => item.isPlayed)
     },

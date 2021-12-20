@@ -1,4 +1,4 @@
-import { IDataSource } from '@/shared/models/datasources'
+import { ICardDataSource, IDataSource } from '@/shared/models/datasources'
 import { IMiracle } from '@/shared/models/miracle'
 import { localStorageCustom } from './localStorage'
 
@@ -30,4 +30,27 @@ export function randomItems(datasouces: IDataSource[]) {
   }
 
   return arr3
+}
+
+export function ranDomCardItems(datasources: ICardDataSource[], currentResouceId: string) {
+  let cardsNotSelectedYet = datasources.filter(
+    (card) => !card.isPlayed || !!card.selected || card.id !== currentResouceId
+  )
+
+  if (!cardsNotSelectedYet.length) {
+    return []
+  }
+
+  const datasourcesLength = datasources.length
+  const ratioCompensate = Math.ceil(datasourcesLength / cardsNotSelectedYet.length) - 1
+
+  for (let index = 0; index < ratioCompensate; index++) {
+    // Get length data need to Compensate
+    const lengthCompensate = datasourcesLength - cardsNotSelectedYet.length
+
+    const sliced = cardsNotSelectedYet.slice(0, lengthCompensate + 1)
+    cardsNotSelectedYet = cardsNotSelectedYet.concat(sliced)
+  }
+
+  return randomItems(cardsNotSelectedYet)
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="card-module flex flex-wrap" ref="mysCardRef">
+  <div class="card-module flex flex-wrap" ref="mysCardRef" v-if="isNotEmptyData">
     <div
       v-for="(item, index) of dataSources"
       :class="['img-box', { active: item.isShow }]"
@@ -23,6 +23,7 @@
     </div>
     <ms-inner-load :refParent="$refs.mysCardRef" :loading="dataSourceLoading" />
   </div>
+  <ms-empty v-else />
 </template>
 
 <script lang="ts">
@@ -31,16 +32,20 @@ import { MIRACEL_CARD_ACTION } from '@/store/mysteries/actions'
 import { Vue, Options } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import InnerLoader from '@/shared/composables/loader/InnerLoader.vue'
+import Empty from '@/shared/composables/empty/Empty.vue'
 import ConfettiService from '@/helpers/confetti'
 import { MIRACLE_RESPONSIVE } from '@/shared/consts/miracle-card-responsive'
+import { ranDomCardItems } from '@/helpers/utils'
 @Options({
   components: {
     [InnerLoader.name]: InnerLoader,
+    [Empty.name]: Empty,
   },
   name: 'ms-cards',
 })
 export default class MysCardComponent extends Vue {
   @Prop({ default: false, type: Boolean }) isPreview!: boolean
+  @Prop({ default: '', type: String }) currentResourceId!: string
 
   minCardWidth: number = 160
   maxCardWidth: number = 225
@@ -60,12 +65,13 @@ export default class MysCardComponent extends Vue {
     return this.$store.getters.dataSourceLoading
   }
 
-  get emptyData() {
-    return this.dataSources.length
+  get isNotEmptyData() {
+    return !!this.dataSources.length
   }
 
   get dataSources(): ICardDataSource[] {
-    return this.isPreview ? this.$store.getters.datasources : this.$store.getters.cardDatasourcesRandom
+    const datasources = this.$store.getters.datasources
+    return this.isPreview ? datasources : ranDomCardItems(datasources, this.currentResourceId)
   }
 
   async handleClick(index: number) {
@@ -85,12 +91,20 @@ export default class MysCardComponent extends Vue {
   }
 
   celebrate() {
-    console.log('SelectCard::celebrate')
     const confetti = new ConfettiService(this.$refs.mysCardRef as HTMLDivElement)
-    confetti.celebrate()
+    confetti.celebrate({
+      particleCount: 2,
+      angle: 60,
+      spread: 55,
+      origin: { x: 1, y: 1 },
+    })
   }
 
   handleResizeChange() {
+    if (!this.isNotEmptyData) {
+      return
+    }
+
     if (this.timer || this.timer !== null) {
       clearTimeout(this.timer)
     }
@@ -113,7 +127,9 @@ export default class MysCardComponent extends Vue {
   }
 
   mounted() {
-    this.calcSizeofCard()
+    if (this.isNotEmptyData) {
+      this.calcSizeofCard()
+    }
   }
 
   created() {
