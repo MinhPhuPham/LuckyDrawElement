@@ -51,7 +51,14 @@ export default class DatasourcesSerivce {
               'User Played!',
               `${dataChange.name} has played at ${dateFromNow(dataChange.selected?.dateSelected as number)}`
             )
-            store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE)
+
+            if (dataChange?.selected) {
+              dataChange.selected = {
+                ...dataChange.selected,
+                dateSelected: convertUnixToDatetime(dataChange.selected?.dateSelected as number),
+              }
+            }
+            store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, dataChange)
           }
         })
       },
