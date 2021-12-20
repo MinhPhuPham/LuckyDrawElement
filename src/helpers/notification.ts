@@ -1,5 +1,5 @@
 import { notification } from 'ant-design-vue'
-import { FrownOutlined, CheckCircleOutlined } from '@ant-design/icons-vue'
+import { FrownOutlined, CheckCircleOutlined, NotificationTwoTone } from '@ant-design/icons-vue'
 import { h } from 'vue'
 
 export function errorNotification(title: string, description = '', error?: Error) {
@@ -20,5 +20,14 @@ export function successNotification(title: string, description = '') {
     message: title,
     description: description,
     icon: h(CheckCircleOutlined, { style: 'color: #108ee9' }),
+  })
+}
+
+export function updateNotification(title: string, description = '') {
+  notification.open({
+    message: title,
+    description: description,
+    icon: h(NotificationTwoTone, { style: 'color: #108ee9' }),
+    duration: 6,
   })
 }

@@ -63,10 +63,6 @@ export default class MysCardComponent extends Vue {
   // eslint-disable-next-line
   selectedCardValue: any = {}
 
-  get selectedCard(): ICardDataSource {
-    return this.$store.getters.selectedDatasource
-  }
-
   get selectedMiracle(): IMiracle {
     return this.$store.getters.miracle
   }
@@ -84,7 +80,7 @@ export default class MysCardComponent extends Vue {
   }
 
   async handleClick(index: number, itemSelected: ICardDataSource) {
-    if (this.selectedCard && !this.isPreview) {
+    if (!!Object.keys(this.selectedCardValue).length && !this.isPreview) {
       return errorNotification('Opps! Seems you selected. Manager setting can only be selected once')
     }
     this.isPreview ? this.successChoosen(index, itemSelected) : this.productAction(index, itemSelected)

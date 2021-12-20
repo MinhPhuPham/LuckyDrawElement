@@ -32,9 +32,6 @@ export default {
     datasources: (state: TMysteriesState) => {
       return state.datasources
     },
-    selectedDatasource: (state: TMysteriesState) => {
-      return state.datasources.find((item) => item.isPlayed)
-    },
     // selectedTextBinding: (state: TMysteriesState) => (cardId: string) => {
     //   return state.datasources.find((item) => item.isPlayed && item.id === cardId)
     // },

@@ -1,4 +1,4 @@
-import { errorNotification } from '@/helpers/notification'
+import { errorNotification, updateNotification } from '@/helpers/notification'
 import { IDataSource } from '@/shared/models/datasources'
 import { ranDomCardItems } from '@/helpers/utils'
 import store from '@/store'
@@ -18,7 +18,7 @@ import {
 } from '@firebase/firestore'
 import { deleteDoc, getDocs } from 'firebase/firestore'
 import { firebaseUser } from './users'
-import { convertUnixToDatetime, nowToUnixTime } from '@/helpers/date'
+import { convertUnixToDatetime, dateFromNow, nowToUnixTime } from '@/helpers/date'
 
 export default class DatasourcesSerivce {
   private miracleId: string = ''
@@ -46,7 +46,12 @@ export default class DatasourcesSerivce {
         snapshot.docChanges().forEach((change) => {
           if (change.type === 'modified') {
             // console.log('Modified resouce: ', change.doc.data())
-            store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, change.doc.data())
+            const dataChange = change.doc.data() as IDataSource
+            updateNotification(
+              'User Played!',
+              `${dataChange.name} has played at ${dateFromNow(dataChange.selected?.dateSelected as number)}`
+            )
+            store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE)
           }
         })
       },
