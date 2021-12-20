@@ -141,16 +141,22 @@ export default class DatasourcesSerivce {
       const itemsRef = collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`)
       const queryDB = query(itemsRef, orderBy('createdAt', 'desc'))
       const querySnapshot = await getDocs(queryDB)
+      const selectedResourceIds: { [key: string]: boolean } = {}
       if (!querySnapshot.empty) {
         querySnapshot.docs.forEach((doc) => {
           const docData = doc.data() as IDataSource
           if (docData.selected) {
+            selectedResourceIds[docData.selected.id as string] = true
             docData.selected.dateSelected = convertUnixToDatetime(docData.selected.dateSelected as number)
           }
           datas.push({ ...docData, id: doc.id })
         })
       }
-      store.commit(MYSTERIES_ACTION.SET_DATASOURCE, isRandomItem ? ranDomCardItems(datas, resourceId) : datas)
+
+      store.commit(
+        MYSTERIES_ACTION.SET_DATASOURCE,
+        isRandomItem ? ranDomCardItems(datas, selectedResourceIds, resourceId) : datas
+      )
     } catch (error) {
       errorNotification('Error! Get data-sources mirarcle', '', error as Error)
     }

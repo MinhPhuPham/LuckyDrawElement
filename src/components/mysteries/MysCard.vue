@@ -160,7 +160,6 @@ export default class MysCardComponent extends Vue {
 
   created() {
     window.addEventListener('resize', this.handleResizeChange)
-    // console.log(this.dataSources)
   }
 
   beforeUnmount() {
