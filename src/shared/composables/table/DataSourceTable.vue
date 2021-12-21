@@ -249,7 +249,7 @@ export default class DataSourceTable extends Vue {
 
   cancel(id: string) {
     if (this.isEmptyRequired()) {
-      this.$store.commit(MYSTERIES_ACTION.DELETE_ITEM, id)
+      this.$store.commit(MYSTERIES_ACTION.DELETE_DATASOURCE, id)
     }
 
     delete this.editableData[id]
