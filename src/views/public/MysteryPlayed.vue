@@ -1,6 +1,6 @@
 <template>
   <ms-header></ms-header>
-  <a-result status="success" title="Thank for joined us! This link for resource was used!" :sub-title="content">
+  <a-result status="success" title="Thank for joined us! This link for resource used!" :sub-title="content">
     <template #extra>
       <a-button key="console" @click="$goto('home')" type="primary"> Go Home </a-button>
     </template>
@@ -31,7 +31,9 @@ export default class PlayWrapper extends Vue {
       const result = sessionStorage.getItem(miracleId as string)
       if (result) {
         const parser = JSON.parse(result) as IDataSource
-        this.content = `Selected: ${parser.name} - at ${convertUnixToDatetime(parser.selected?.dateSelected as number)}`
+        this.content = `This link selected: ${parser.name} - at ${convertUnixToDatetime(
+          parser.selected?.dateSelected as number
+        )}`
       }
     }
   }
