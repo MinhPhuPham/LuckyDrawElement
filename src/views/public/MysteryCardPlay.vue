@@ -1,11 +1,8 @@
 <template>
   <ms-header subTitle="Let's choose a card for becomes winner"></ms-header>
   <div class="h-85vh w-full" ref="cardsWrapper">
-    <ms-card-screen :resourceSelected="resourceData" v-if="!initLoading && Object.keys(resourceData).length" />
-    <ms-inner-load
-      :refParent="$refs.cardsWrapper"
-      :loading="initLoading || dataSourceLoading || miracleLoading"
-    ></ms-inner-load>
+    <ms-card-screen :resourceSelected="resourceData" v-if="!initLoading && !!Object.keys(resourceData).length" />
+    <ms-inner-load :refParent="$refs.cardsWrapper" :loading="true" v-else></ms-inner-load>
   </div>
   <ms-footer />
 </template>
