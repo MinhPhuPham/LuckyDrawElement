@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { ICardDataSource } from '@/shared/models/datasources'
-import { MIRACEL_CARD_ACTION, MYSTERIES_ACTION } from '@/store/mysteries/actions'
+import { MIRACEL_CARD_ACTION } from '@/store/mysteries/actions'
 import { Vue, Options } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import InnerLoader from '@/shared/composables/loader/InnerLoader.vue'

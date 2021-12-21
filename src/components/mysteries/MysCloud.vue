@@ -4,7 +4,7 @@
     <div id="tags">
       <ul v-for="(item, index) in dataSources" :key="index">
         <li>
-          <img v-if="item.url.length > 10" :src="item.url" :width="50" :height="50" style="border-radius: 5px" />
+          <img v-if="item.link.length > 10" :src="item.url" :width="50" :height="50" style="border-radius: 5px" />
           <a href="javascript:void(0);" :style="nameStyle">{{ item.name }}</a>
         </li>
       </ul>
@@ -21,18 +21,17 @@
       :disabled="isActive"
       @click="go()"
     >
-      {{ $t('luckCloud.go') }}
+      {{ $t('action.go') }}
     </a-button>
     <a-button
       icon="dashboard"
-      type=""
       shape="round"
       size="large"
       :class="{ action_b: true, active: isActive, normal: !isActive }"
       :disabled="isRunning"
       @click="start"
     >
-      {{ isActive ? $t('luckCloud.stop') : $t('luckCloud.start') }}
+      {{ isActive ? $t('action.stop') : $t('action.start') }}
     </a-button>
   </div>
 </template>
@@ -91,6 +90,8 @@ export default class MysterCloud extends Vue {
 
   onDraw() {
     this.currentWinnerArr = []
+    console.log(this.dataSources)
+
     const tempArr = [...this.dataSources]
     for (let j = 0; j < this.winnerCount; j++) {
       let draws = tempArr

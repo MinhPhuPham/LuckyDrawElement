@@ -52,7 +52,7 @@
           v-model:value="editableData[record.id][column.dataIndex]"
           style="margin: -5px 0"
           :ref="`nameInput${column.dataIndex}${record.id}`"
-          @pressEnter="onEnter(column.dataIndex)"
+          @pressEnter="onEnter(record.id)"
         />
         <template v-else>
           {{ text }}
@@ -219,7 +219,8 @@ export default class DataSourceTable extends Vue {
   // eslint-disable-next-line
   qrCodeViewer: any = {}
 
-  onEnter(indexKey: string) {
+  async onEnter(resourceId: string) {
+    await this.onSave(resourceId)
     this.addDefault()
   }
 
@@ -227,12 +228,12 @@ export default class DataSourceTable extends Vue {
     this.editableData[id] = JSON.parse(JSON.stringify(this.dataSources.find((item) => id === item.id)))
   }
 
-  onSave(id: string) {
+  async onSave(id: string) {
     if (this.isEmptyRequired(id)) {
       return
     }
 
-    new DatasourcesSerivce(this.$database, this.selectedMiracle.id)
+    return await new DatasourcesSerivce(this.$database, this.selectedMiracle.id)
       .upsertDataSource(this.editableData[id])
       .then((res) => {
         successNotification(`${this.$t('message.success')} ${this.$t('message.save_datasource')}`)
@@ -247,6 +248,10 @@ export default class DataSourceTable extends Vue {
   }
 
   cancel(id: string) {
+    if (this.isEmptyRequired()) {
+      this.$store.commit(MYSTERIES_ACTION.DELETE_ITEM, id)
+    }
+
     delete this.editableData[id]
   }
 

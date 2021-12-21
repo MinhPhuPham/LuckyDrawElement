@@ -6,7 +6,6 @@
       <div class="prize-wrap">
         <div class="item" v-for="(item, index) in prizeList" :key="index" :style="_calcRotateAngle(index)">
           <slot name="item" :item="item" />
-          {{ item }}
         </div>
       </div>
     </div>
@@ -36,7 +35,7 @@ export default class Wheel extends Vue {
   @Prop({ required: true, type: String }) height!: string
 
   // Each sector background color, circulation padding
-  @Prop({ default: () => ['#F52D4B', '#FEE9ED'], type: Array }) prizeBgColors!: Array<string>
+  @Prop({ default: () => ['#F52D4B', '#FEE9ED', '#0c46fe'], type: Array }) prizeBgColors!: Array<string>
 
   // Each piece of fan-shaped frame color
   @Prop({ default: '#F23544', type: String }) borderColor!: string
@@ -91,6 +90,10 @@ export default class Wheel extends Vue {
       ctx.fillStyle = prizeBgColors[prizeBgColorsIndex]
       if (prizeBgColorsIndex === prizeBgColors.length - 1) {
         prizeBgColorsIndex = -1
+      }
+
+      if (index === prizeNum - 1) {
+        ctx.fillStyle = prizeBgColors[1]
       }
 
       ctx.beginPath() // Start to draw

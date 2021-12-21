@@ -34,7 +34,10 @@
     "edit": "Edit",
     "delete": "Delete",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "go": "Go",
+    "stop": "Stop",
+    "start": "Start"
   },
   "placeholder": {
     "title": "Ex: Select gift for merry christmas",

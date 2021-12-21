@@ -1,5 +1,5 @@
 <template>
-  <div id="wheel" :hidden="showEmpty" ref="wheelWrapRef">
+  <div id="wheel" v-if="isNotEmpty" ref="wheelWrapRef">
     <div class="big-wheel-box">
       <wheel
         :width="`${sizeWheel}px`"
@@ -9,7 +9,6 @@
         @over="openNotification"
       >
         <template v-slot:item="{ item }">
-          {{ item }}
           <div class="prize-name">{{ item.name }}</div>
           <img
             class="prize-img"
@@ -19,20 +18,28 @@
         </template>
       </wheel>
 
-      <img class="btn-go" @click="go" :src="require('@/assets/images/mys-wheel/go.png')" />
+      <a-tooltip :destroyTooltipOnHide="true" placement="bottom" title="Click to play">
+        <img class="btn-go" @click="go" :src="require('@/assets/images/mys-wheel/go.png')" />
+      </a-tooltip>
     </div>
   </div>
+
+  <ms-empty v-else />
 </template>
 
 <script lang="ts">
 import { Vue, Options } from 'vue-class-component'
 import Wheel from '@/shared/composables/wheel/Wheel.vue'
+import Empty from '@/shared/composables/empty/Empty.vue'
+import { Tooltip } from 'ant-design-vue'
 import { IWheelDataSource } from '@/shared/models/datasources'
 import { Prop } from 'vue-property-decorator'
 
 @Options({
   components: {
     [Wheel.name]: Wheel,
+    [Tooltip.name]: Tooltip,
+    [Empty.name]: Empty,
   },
   name: 'ms-wrap-wheel',
 })
@@ -41,6 +48,10 @@ export default class MysteryWheel extends Vue {
 
   get dataSources(): IWheelDataSource[] {
     return this.$store.getters.datasources
+  }
+
+  get isNotEmpty(): boolean {
+    return !!this.dataSources.length
   }
 
   sizeWheel: number = 500
@@ -57,7 +68,12 @@ export default class MysteryWheel extends Vue {
   }
 
   mounted() {
-    // this.sizeWheel = (this.$refs.wheelWrapRef as HTMLDivElement).clientWidth / 3
+    // this.sizeWheel = (this.$refs.wheelWrapRef as HTMLDivElement).clientWidth / 2
+    console.log(this.sizeWheel)
+  }
+
+  openNotification($event) {
+    console.log($event)
   }
 }
 </script>
@@ -106,10 +122,11 @@ export default class MysteryWheel extends Vue {
     }
     .btn-go {
       position: absolute;
-      top: 40%;
+      top: 37%;
       left: 50%;
       transform: translateX(-50%);
       width: 20%;
+      cursor: pointer;
     }
   }
 }
