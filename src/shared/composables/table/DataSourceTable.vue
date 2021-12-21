@@ -93,7 +93,7 @@
           </a-popconfirm>
         </span>
         <span v-else>
-          <a-button class="action-max mb-haft" block @click="edit(record.id)">
+          <a-button v-if="!record.isPlayed" class="action-max mb-haft" block @click="edit(record.id)">
             <template #icon>
               <EditOutlined />
             </template>
