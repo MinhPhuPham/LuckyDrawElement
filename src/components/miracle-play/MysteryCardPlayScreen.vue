@@ -5,8 +5,8 @@
   </div>
 
   <div class="card-play__content">
-    <ms-cards v-if="!isAuth" :currentResourceId="resourceSelected.id"></ms-cards>
-    <ms-datasource :isViewMode="true" v-if="selectedMiracle && isAuth" />
+    <ms-cards v-if="!isAuth || !isOwnerMiracle" :currentResourceId="resourceSelected.id"></ms-cards>
+    <ms-datasource :isViewMode="true" v-if="selectedMiracle && isAuth && isOwnerMiracle" />
   </div>
 </template>
 
@@ -21,6 +21,7 @@ import MysteriesSerivce from '@/services/mysteries'
 import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
 import { IMiracle } from '@/shared/models/miracle'
 import DatasourcesSerivce from '@/services/data-sources'
+import { errorNotification } from '@/helpers/notification'
 
 @Options({
   components: {
@@ -47,6 +48,10 @@ export default class MysterCardPlayScreen extends Vue {
     return this.$store.getters.miracle
   }
 
+  get isOwnerMiracle() {
+    return this.selectedMiracle.creatorId === this.userInfo.id
+  }
+
   listenCollectionChange(miracleId: string, userId: string) {
     this.dataSourceSerivce = new DatasourcesSerivce(this.$database, miracleId, userId)
     this.dataSourceSerivce.onListenDataSourceSingle()
@@ -66,13 +71,13 @@ export default class MysterCardPlayScreen extends Vue {
         this.$store.commit(MYSTERIES_ACTION.SET_ITEMS_LOADING, false)
       })
 
-    if (this.isAuth && this.userInfo) {
+    if (this.isAuth && this.isOwnerMiracle) {
       this.listenCollectionChange(miracleId as string, userId as string)
     }
   }
 
   beforeUnmount() {
-    if (this.isAuth) {
+    if (this.isAuth && this.isOwnerMiracle) {
       this.dataSourceSerivce.offListenDataSource()
     }
   }
