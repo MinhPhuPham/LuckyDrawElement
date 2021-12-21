@@ -56,7 +56,7 @@ export function ranDomCardItems(
     // Get length data need to Compensate
     const lengthCompensate = datasourcesLength - cardsNotSelectedYet.length
 
-    const sliced = cardsNotSelectedYet.slice(0, lengthCompensate + 1)
+    const sliced = cardsNotSelectedYet.slice(0, lengthCompensate)
     cardsNotSelectedYet = cardsNotSelectedYet.concat(sliced)
   }
 
