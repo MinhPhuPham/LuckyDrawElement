@@ -17,7 +17,7 @@
           <img class="img-item" :src="item.cardFront || require('@/assets/images/mys-cards/card-front.png')" />
         </div>
         <div class="content flex items-center">
-          <a class="subtitle_item">
+          <a class="subtitle_item text-medium">
             {{ selectedCardValue[`${item.id}${index}`]?.subtitle || $t('label.merry_thank') }}
           </a>
         </div>
