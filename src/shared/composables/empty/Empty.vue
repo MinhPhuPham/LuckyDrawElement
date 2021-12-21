@@ -2,7 +2,7 @@
   <Empty :src="emptyImage">
     <template #description>
       <span>
-        {{ message || 'Can\t find any data. Please check again' }}
+        {{ message || "Can't find any data. Please check again" }}
       </span>
     </template>
     <slot />

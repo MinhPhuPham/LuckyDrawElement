@@ -127,7 +127,8 @@ export default class DatasourcesSerivce {
         }
       )
     } catch (error) {
-      errorNotification('Error! Can\t update into DB', '', error as Error)
+      errorNotification('Error! This link maybe used, please reload to see result', '', error as Error)
+      throw new Error('Error')
     } finally {
       store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
     }
@@ -188,7 +189,7 @@ export default class DatasourcesSerivce {
       await deleteDoc(doc(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`, datasourceId))
       store.commit(MYSTERIES_ACTION.DELETE_DATASOURCE, datasourceId)
     } catch (error) {
-      errorNotification('Error! Can\t delete miracle', '', error as Error)
+      errorNotification("Error! Can't delete data", '', error as Error)
     } finally {
       store.commit(MYSTERIES_ACTION.SET_DATASOURCE_LOADING, false)
     }
