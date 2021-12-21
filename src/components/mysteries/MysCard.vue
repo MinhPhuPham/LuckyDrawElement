@@ -16,9 +16,9 @@
           <a class="title_item">{{ selectedCardValue[`${item.id}${index}`]?.name || $t('label.mystery_card') }}</a>
           <img class="img-item" :src="item.cardFront || require('@/assets/images/mys-cards/card-front.png')" />
         </div>
-        <div class="content">
+        <div class="content flex items-center">
           <a class="subtitle_item">
-            {{ selectedCardValue[`${item.id}${index}`]?.subtitle || $t('label.mystery_card') }}
+            {{ selectedCardValue[`${item.id}${index}`]?.subtitle || $t('label.merry_thank') }}
           </a>
         </div>
       </div>
@@ -196,6 +196,10 @@ $cardHeight: 350px;
       border: 1px solid #e8e8e8;
       border-radius: 7px;
       height: 92%;
+
+      .content {
+        height: 30%;
+      }
 
       .image-top {
         border-bottom: 1px solid #e8e8e8;
