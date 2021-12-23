@@ -15,6 +15,7 @@ import Footer from '@/components/layout/Footer.vue'
 import MysteryCardPlayScreen from '@/components/miracle-play/MysteryCardPlayScreen.vue'
 import InnerLoader from '@/shared/composables/loader/InnerLoader.vue'
 import DatasourcesSerivce from '@/services/data-sources'
+import { IUser } from '@/shared/models/user'
 
 @Options({
   components: {
@@ -30,6 +31,10 @@ export default class MysteryCardPlay extends Vue {
 
   get isAuth() {
     return this.$store.getters.isAuth
+  }
+
+  get userInfo(): IUser {
+    return this.$store.getters.userInfo
   }
 
   get dataSourceLoading() {
@@ -59,7 +64,7 @@ export default class MysteryCardPlay extends Vue {
     }
 
     const { isPlayed, data } = response
-    if (isPlayed && !this.isAuth) {
+    if (isPlayed && (!this.isAuth || (this.isAuth && this.userInfo.uid !== userId))) {
       sessionStorage.setItem(`${miracleId}`, JSON.stringify(data))
       this.$goto('played_link')
       return

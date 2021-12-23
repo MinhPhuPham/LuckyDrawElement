@@ -3,7 +3,6 @@
     <h1>{{ selectedMiracle.title }}</h1>
     <p>{{ selectedMiracle.description }}</p>
   </div>
-
   <div class="card-play__content">
     <ms-cards v-if="!isOwnerMiracle" :currentResourceId="resourceSelected.id"></ms-cards>
     <ms-datasource :isViewMode="true" v-if="selectedMiracle && isOwnerMiracle" />
@@ -49,7 +48,7 @@ export default class MysterCardPlayScreen extends Vue {
   }
 
   get isOwnerMiracle() {
-    return this.isAuth && this.selectedMiracle.creatorId === this.userInfo.id
+    return this.isAuth && this.selectedMiracle.creatorId === this.userInfo.uid
   }
 
   listenCollectionChange(miracleId: string, userId: string) {
