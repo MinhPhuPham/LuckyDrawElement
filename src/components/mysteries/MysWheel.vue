@@ -35,6 +35,8 @@ import { Tooltip } from 'ant-design-vue'
 import { IWheelDataSource } from '@/shared/models/datasources'
 import { Prop } from 'vue-property-decorator'
 
+import ConfettiService from '@/helpers/confetti'
+
 @Options({
   components: {
     [Wheel.name]: Wheel,
@@ -74,6 +76,24 @@ export default class MysteryWheel extends Vue {
 
   openNotification($event) {
     console.log($event)
+    if (this.isPreview) {
+      this.celebrate()
+    } else {
+    }
+  }
+
+  celebrate() {
+    for (let index = 0; index < 3; index++) {
+      setTimeout(() => {
+        const confetti = new ConfettiService(this.$refs.wheelWrapRef as HTMLDivElement)
+        confetti.celebrate({
+          particleCount: 4,
+          angle: 90,
+          spread: 55,
+          origin: { x: 0, y: 1 },
+        })
+      }, 500)
+    }
   }
 }
 </script>

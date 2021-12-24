@@ -24,9 +24,9 @@
             </template>
           </a-dropdown-button>
         </template>
-        <a-list-item-meta class="text-left" :description="item.description">
+        <a-list-item-meta class="miracle-items-max text-left" :description="item.description">
           <template #title>
-            <a>{{ item.title }}</a>
+            <a class="text-max-line">{{ item.title }}</a>
           </template>
           <template #avatar>
             <a-avatar shape="square" size="large" :src="require(`@/assets/${miracleTypes[item.type].image}.png`)" />
@@ -128,6 +128,14 @@ export default class MiracleItems extends Vue {
       &-meta-avatar {
         margin-left: 8px;
         margin-right: 12px;
+      }
+
+      &-meta-description {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
       }
     }
   }

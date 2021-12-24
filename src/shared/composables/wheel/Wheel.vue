@@ -1,5 +1,4 @@
 <template>
-  {{ sizeWheel }}
   <div class="__big-wheel" ref="bigWheel" :style="{ width, height }">
     <div class="wrap" :style="{ transform: rotateAngle, transition: rotateTransition }">
       <canvas id="canvas" ref="canvas">Browser version is too low</canvas>
@@ -20,6 +19,7 @@ import { Prop } from 'vue-property-decorator'
 @Options({
   components: {},
   name: 'wheel',
+  emits: ['over'],
 })
 export default class Wheel extends Vue {
   // Start the angle of rotation
@@ -111,7 +111,6 @@ export default class Wheel extends Vue {
    * @param {number} index - Prize serial number
    */
   rotate(index: number) {
-    const turnsTime = this.turnsTime
     const rotateAngle =
       this.startRotateDegree +
       this.turnsNumber * 360 +
@@ -120,10 +119,10 @@ export default class Wheel extends Vue {
       (this.startRotateDegree % 360)
     this.startRotateDegree = rotateAngle
     this.rotateAngle = `rotate(${rotateAngle}deg)`
-    this.rotateTransition = `transform ${turnsTime}s cubic-bezier(0.250, 0.460, 0.455, 0.995)`
+    this.rotateTransition = `transform ${this.turnsTime}s cubic-bezier(0.250, 0.460, 0.455, 0.995)`
     setTimeout(() => {
       this.$emit('over', this.prizeList[index])
-    }, turnsTime * 1000 + 500)
+    }, this.turnsTime * 1000)
   }
 
   // Calculate each prize fan-shaped angle style according to INDEX
