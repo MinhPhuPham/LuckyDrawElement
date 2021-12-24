@@ -1,13 +1,13 @@
 <template>
   <div id="cloud_main" :class="{ mask: showResult }" @click="showResult = false" style="height: 75vh"></div>
   <div>
-    <div id="tags">
-      <!-- <ul v-for="(item, index) in dataSources" :key="index">
+    <div id="tags" style="display: none">
+      <ul v-for="(item, index) in dataSources" :key="index">
         <li>
           <img v-if="item.link.length > 10" :src="item.url" :width="50" :height="50" style="border-radius: 5px" />
           <a href="javascript:void(0);" :style="nameStyle">{{ item.name }}</a>
         </li>
-      </ul> -->
+      </ul>
     </div>
   </div>
 
@@ -89,7 +89,7 @@ export default class MysterCloud extends Vue {
 
   onDraw() {
     this.currentWinnerArr = []
-    console.log(this.dataSources)
+    // console.log(this.dataSources)
 
     const tempArr = [...this.dataSources]
     for (let j = 0; j < this.winnerCount; j++) {
