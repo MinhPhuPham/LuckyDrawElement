@@ -1,10 +1,12 @@
 <template>
   <div class="h-85vh w-full">
-    <div class="result-head" v-if="selectedMiracle">
-      <h1>{{ selectedMiracle.title }}</h1>
-      <p>{{ selectedMiracle.description }}</p>
+    <div class="container-wrap">
+      <div class="text-center" v-if="selectedMiracle">
+        <h1>{{ selectedMiracle.title }}</h1>
+        <p>{{ selectedMiracle.description }}</p>
+      </div>
+      <ms-datasource :isViewMode="true" />
     </div>
-    <ms-datasource :isViewMode="true" />
   </div>
 </template>
 
