@@ -7,6 +7,7 @@
         ref="childWheel"
         :prizeList="dataSources"
         @over="openNotification"
+        v-if="sizeWheel"
       >
         <template v-slot:item="{ item }">
           <div class="prize-name">{{ item.name }}</div>
@@ -56,7 +57,7 @@ export default class MysteryWheel extends Vue {
     return !!this.dataSources.length
   }
 
-  sizeWheel: number = 500
+  sizeWheel: number = 0
 
   isRunning = false
 
@@ -70,12 +71,14 @@ export default class MysteryWheel extends Vue {
   }
 
   mounted() {
-    // this.sizeWheel = (this.$refs.wheelWrapRef as HTMLDivElement).clientWidth / 2
-    console.log(this.sizeWheel)
+    const wheelElement = this.$refs.wheelWrapRef as HTMLDivElement
+    const widthWrap = wheelElement.clientWidth
+    const heightWrap = wheelElement.clientHeight
+
+    this.sizeWheel = widthWrap > heightWrap ? heightWrap / 1.2 : widthWrap / 1.5
   }
 
-  openNotification($event) {
-    console.log($event)
+  openNotification(resourceSelected: IWheelDataSource) {
     if (this.isPreview) {
       this.celebrate()
     } else {
@@ -83,6 +86,8 @@ export default class MysteryWheel extends Vue {
   }
 
   celebrate() {
+    this.isRunning = false
+
     for (let index = 0; index < 3; index++) {
       setTimeout(() => {
         const confetti = new ConfettiService(this.$refs.wheelWrapRef as HTMLDivElement)

@@ -1,13 +1,13 @@
 <template>
-  <div id="cloud_main" :class="{ mask: showResult }" @click="showResult = false"></div>
+  <div id="cloud_main" :class="{ mask: showResult }" @click="showResult = false" style="height: 75vh"></div>
   <div>
     <div id="tags">
-      <ul v-for="(item, index) in dataSources" :key="index">
+      <!-- <ul v-for="(item, index) in dataSources" :key="index">
         <li>
           <img v-if="item.link.length > 10" :src="item.url" :width="50" :height="50" style="border-radius: 5px" />
           <a href="javascript:void(0);" :style="nameStyle">{{ item.name }}</a>
         </li>
-      </ul>
+      </ul> -->
     </div>
   </div>
 
@@ -24,7 +24,6 @@
       {{ $t('action.go') }}
     </a-button>
     <a-button
-      icon="dashboard"
       shape="round"
       size="large"
       :class="{ action_b: true, active: isActive, normal: !isActive }"
@@ -149,11 +148,12 @@ export default class MysterCloud extends Vue {
   }
 
   createCanvas() {
-    const canvas = document.createElement('canvas')
-    canvas.width = document.body.offsetWidth
-    canvas.height = document.body.offsetHeight
+    const canvas = document.createElement('canvas') as HTMLCanvasElement
+    const wrapElement = document.getElementById('cloud_main') as HTMLDivElement
+    canvas.width = wrapElement.offsetWidth
+    canvas.height = wrapElement.offsetHeight
     canvas.id = 'my_canvas'
-    this.$el.querySelector('#cloud_main').appendChild(canvas)
+    ;(document.querySelector('#cloud_main') as HTMLDivElement).appendChild(canvas)
   }
 
   setTagCanvas() {
@@ -167,6 +167,10 @@ export default class MysterCloud extends Vue {
       noSelect: true,
       lock: 'xy',
     })
+  }
+
+  mounted() {
+    this.setTagCanvas()
   }
 }
 </script>
