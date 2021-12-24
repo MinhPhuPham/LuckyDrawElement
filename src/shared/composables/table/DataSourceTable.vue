@@ -83,7 +83,7 @@
           <AppstoreTwoTone />
           <a class="ml-haft">QR code</a>
         </span>
-        <ms-qrcode v-if="qrCodeViewer[record.id]" level="L" :url="text" :keyValue="text" />
+        <ms-qrcode v-if="qrCodeViewer[record.id]" level="L" :url="text" :keyValue="text" :nameFile="record.name" />
       </template>
       <template v-else-if="column.key === 'action'">
         <span v-if="editableData[record.id]">
@@ -260,8 +260,13 @@ export default class DataSourceTable extends Vue {
   onSelectChange() {}
 
   goToResult() {
-    const firstItemId = this.dataSources[0]?.id
-    firstItemId && this.$router.push(this.parseParams(firstItemId))
+    this.$router.push({
+      name: 'result_view',
+      params: {
+        userId: this.userId,
+        miracleId: this.selectedMiracle.id,
+      },
+    })
   }
 
   addDefault() {

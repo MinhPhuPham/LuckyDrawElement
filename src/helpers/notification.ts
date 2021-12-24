@@ -23,11 +23,11 @@ export function successNotification(title: string, description = '') {
   })
 }
 
-export function updateNotification(title: string, description = '') {
+export function updateNotification(title: string, description = '', timeout = 6) {
   notification.open({
     message: title,
     description: description,
     icon: h(NotificationTwoTone, { style: 'color: #108ee9' }),
-    duration: 6,
+    duration: timeout,
   })
 }

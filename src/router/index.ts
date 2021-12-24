@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: 'result',
+        path: 'result/:miracleId',
         name: 'result_view',
         component: () => import(/* webpackChunkName: "results_view" */ '../views/public/MysteryResult.vue'),
       },

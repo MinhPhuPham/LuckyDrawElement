@@ -38,7 +38,9 @@
     "copied": "Copied",
     "go": "Go",
     "stop": "Stop",
-    "start": "Start"
+    "start": "Start",
+    "download_qr": "Download QR",
+    "downloaded": "Downloaded"
   },
   "placeholder": {
     "title": "Ex: Select gift for merry christmas",

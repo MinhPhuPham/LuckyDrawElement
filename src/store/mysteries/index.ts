@@ -84,6 +84,9 @@ export default {
         }
       })
     },
+    [MYSTERIES_ACTION.ADD_DATASOURCE]: (state: TMysteriesState, datasource: IDataSource) => {
+      state.datasources.push(datasource)
+    },
     [MYSTERIES_ACTION.DELETE_DATASOURCE]: (state: TMysteriesState, datasourceId: string) => {
       state.datasources = state.datasources.filter((item) => item.id !== datasourceId)
     },
@@ -92,6 +95,9 @@ export default {
     },
     [MYSTERIES_ACTION.SET_DATASOURCE_LOADING]: (state: TMysteriesState, loading: boolean) => {
       state.dataSourceLoading = loading
+    },
+    [MYSTERIES_ACTION.CLEAR_DATASOURCE]: (state: TMysteriesState) => {
+      state.datasources = []
     },
     // Card
     [MIRACEL_CARD_ACTION.SET_SELECT_CARD]: (state: TMysteriesState, index: number) => {

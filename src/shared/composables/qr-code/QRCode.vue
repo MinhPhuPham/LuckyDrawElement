@@ -15,6 +15,14 @@
         </template>
       </a-button>
     </a-tooltip>
+    <a-tooltip :title="$t(isDownloaded ? 'action.downloaded' : 'action.download_qr')" placement="right">
+      <a-button class="ml-1" @click="downloadQR" type="dashed" size="small">
+        <template #icon>
+          <DownloadOutlined v-if="!isDownloaded" />
+          <CheckOutlined v-else :style="{ color: '#1890ff' }" />
+        </template>
+      </a-button>
+    </a-tooltip>
   </div>
 </template>
 
@@ -22,13 +30,13 @@
 import { Vue, Options } from 'vue-class-component'
 import QrcodeVue from 'qrcode.vue'
 import { Tooltip } from 'ant-design-vue'
-import { CopyOutlined, CheckOutlined } from '@ant-design/icons-vue'
+import { CopyOutlined, CheckOutlined, DownloadOutlined } from '@ant-design/icons-vue'
 import { Prop } from 'vue-property-decorator'
 
 type levelQR = 'L' | 'M' | 'Q' | 'H'
 
 @Options({
-  components: { QrcodeVue, CopyOutlined, CheckOutlined, [Tooltip.name]: Tooltip },
+  components: { QrcodeVue, CopyOutlined, CheckOutlined, DownloadOutlined, [Tooltip.name]: Tooltip },
   name: 'ms-qrcode',
 })
 export default class QRCode extends Vue {
@@ -36,11 +44,14 @@ export default class QRCode extends Vue {
   @Prop({ required: true, type: String }) keyValue!: string
   @Prop({ default: 120, type: Number }) size!: number
   @Prop({ default: 'H', type: String }) level!: levelQR
+  @Prop({ default: 'miracle-qr-code', type: String }) nameFile!: string
 
   isCopied = false
+  isDownloaded = false
 
   get urlParse() {
     this.isCopied = false
+    this.isDownloaded = false
     return this.url
   }
 
@@ -52,6 +63,16 @@ export default class QRCode extends Vue {
         this.isCopied = true
       })
     })
+  }
+
+  downloadQR() {
+    const canvas = document.getElementById(`qrblock-${this.keyValue}`) as HTMLCanvasElement
+    const link = document.createElement('a')
+    link.download = `link-play-${this.nameFile}`
+    link.href = canvas.toDataURL()
+    link.click()
+    link.remove()
+    this.isDownloaded = true
   }
 }
 </script>

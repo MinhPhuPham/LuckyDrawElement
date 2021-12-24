@@ -1,79 +1,89 @@
 <template>
-  <ms-header subTitle="Let's choose a card for becomes winner"></ms-header>
-  <div class="h-85vh w-full" ref="cardsWrapper">
-    <ms-card-screen :resourceSelected="resourceData" v-if="!initLoading && !!Object.keys(resourceData).length" />
-    <ms-inner-load :refParent="$refs.cardsWrapper" :loading="true" v-else></ms-inner-load>
+  <div class="card-play__head text-center" v-if="selectedMiracle">
+    <h1>{{ selectedMiracle.title }}</h1>
+    <p>{{ selectedMiracle.description }}</p>
   </div>
-  <ms-footer />
+  <div class="card-play__content">
+    <ms-cards
+      v-if="!isAuth || (userIdSelected && userIdSelected !== userInfo?.uid)"
+      :currentResourceId="resourceIdSelected"
+    ></ms-cards>
+  </div>
 </template>
 
 <script lang="ts">
 import { Vue, Options } from 'vue-class-component'
 
-import Header from '@/components/layout/Header.vue'
-import Footer from '@/components/layout/Footer.vue'
-import MysteryCardPlayScreen from '@/components/miracle-play/MysteryCardPlayScreen.vue'
-import InnerLoader from '@/shared/composables/loader/InnerLoader.vue'
-import DatasourcesSerivce from '@/services/data-sources'
-import { IUser } from '@/shared/models/user'
+import MysCard from '@/components/mysteries/MysCard.vue'
+import MysteriesSerivce from '@/services/mysteries'
+import { MYSTERIES_ACTION } from '@/store/mysteries/actions'
+import { IMiracle } from '@/shared/models/miracle'
 
 @Options({
   components: {
-    [Header.name]: Header,
-    [Footer.name]: Footer,
-    [MysteryCardPlayScreen.name]: MysteryCardPlayScreen,
-    [InnerLoader.name]: InnerLoader,
+    [MysCard.name]: MysCard,
   },
 })
 export default class MysteryCardPlay extends Vue {
-  initLoading = true
-  resourceData = {}
+  resourceIdSelected = ''
+  userIdSelected = ''
 
   get isAuth() {
     return this.$store.getters.isAuth
   }
 
-  get userInfo(): IUser {
+  get userInfo() {
     return this.$store.getters.userInfo
   }
 
-  get dataSourceLoading() {
-    return this.$store.getters.dataSourceLoading
+  get selectedMiracle(): IMiracle {
+    return this.$store.getters.miracle
   }
 
-  get miracleLoading() {
-    return this.$store.getters.miracleLoading
+  get isOwnerMiracle() {
+    return this.isAuth && this.selectedMiracle.creatorId === this.userInfo.uid
   }
 
   async created() {
-    const { userId, miracleId } = this.$route.params
     const { resourceId } = this.$route.query
+    const { userId, miracleId } = this.$route.params
+    await new MysteriesSerivce(this.$database, miracleId as string, userId as string)
+      .loadSingleInfoMiracle()
+      .then((res) => {
+        if (res) {
+          return this.$store.commit(MYSTERIES_ACTION.SET_ITEM, res)
+        }
+        this.$goto('system_error')
+      })
+      .finally(() => {
+        this.$store.commit(MYSTERIES_ACTION.SET_ITEMS_LOADING, false)
+      })
 
-    if (!userId || !miracleId || !resourceId) {
-      return this.$goto('not_found')
-    }
-
-    const datasourceService = new DatasourcesSerivce(this.$database, miracleId as string, userId as string)
-
-    const response = await datasourceService.checkCurrentDataResouce(resourceId as string)
-    this.initLoading = false
-
-    if (!response) {
-      console.log('resouce not exist')
-      return this.$goto('not_found')
-    }
-
-    const { isPlayed, data } = response
-    if (isPlayed && (!this.isAuth || (this.isAuth && this.userInfo.uid !== userId))) {
-      sessionStorage.setItem(`${miracleId}`, JSON.stringify(data))
-      this.$goto('played_link')
-      return
-    }
-
-    await datasourceService.loadSingleDataSourceMiracle(!this.isAuth, resourceId as string)
-    this.resourceData = data
-    sessionStorage.setItem('resourceChooseId', resourceId as string)
-    sessionStorage.setItem('userId', userId as string)
+    this.userIdSelected = userId as string
+    this.resourceIdSelected = resourceId as string
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.card-play {
+  &__head {
+    h1 {
+      margin-top: 1.5rem;
+    }
+
+    p {
+      color: rgba(107, 114, 128);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+  }
+
+  &__content {
+    width: 90%;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+}
+</style>
+

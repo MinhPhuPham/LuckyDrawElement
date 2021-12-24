@@ -36,29 +36,38 @@ export default class DatasourcesSerivce {
     }
   }
 
-  onListenDataSourceSingle(callback?: Function) {
+  onListenDataSourceSingle() {
     const itemsColRef = collection(this._db, `mysteries/${this.userId}/data_sources/${this.miracleId}/items`)
     const queryDB = query(itemsColRef)
+    store.commit(MYSTERIES_ACTION.CLEAR_DATASOURCE)
 
     this.unsubscribeSnapshot = onSnapshot(
       queryDB,
       (snapshot) => {
         snapshot.docChanges().forEach((change) => {
-          if (change.type === 'modified') {
-            // console.log('Modified resouce: ', change.doc.data())
-            const dataChange = change.doc.data() as IDataSource
-            updateNotification(
-              'User Played!',
-              `${dataChange.name} has played at ${dateFromNow(dataChange.selected?.dateSelected as number)}`
-            )
+          const dataChange = change.doc.data() as IDataSource
 
-            if (dataChange?.selected) {
-              dataChange.selected = {
-                ...dataChange.selected,
-                dateSelected: convertUnixToDatetime(dataChange.selected?.dateSelected as number),
-              }
+          if (dataChange?.selected) {
+            dataChange.selected = {
+              ...dataChange.selected,
+              dateSelected: convertUnixToDatetime(dataChange.selected?.dateSelected as number),
             }
-            store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, dataChange)
+          }
+
+          switch (change.type) {
+            case 'added':
+              store.commit(MYSTERIES_ACTION.ADD_DATASOURCE, dataChange)
+              break
+
+            case 'modified':
+              updateNotification(
+                'User Played!',
+                `${dataChange.name} has played and select ${dataChange.selected?.name} at ${dateFromNow(
+                  dataChange.selected?.dateSelected as number
+                )}`
+              )
+              store.commit(MYSTERIES_ACTION.UPSERT_DATASOURCE, dataChange)
+              break
           }
         })
       },
